@@ -52,9 +52,6 @@
 		9418B7FD191CB8F1000D67D6 /* BCInitialVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BCInitialVC.m; sourceTree = "<group>"; };
 		9418B7FF191CB8F1000D67D6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		9418B806191CB8F1000D67D6 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		9418B80E191CB8F1000D67D6 /* BeaconCamTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BeaconCamTests-Info.plist"; sourceTree = "<group>"; };
-		9418B810191CB8F1000D67D6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		9418B812191CB8F1000D67D6 /* BeaconCamTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BeaconCamTests.m; sourceTree = "<group>"; };
 		9418B820191CCC26000D67D6 /* BCCameraModeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCCameraModeButton.h; sourceTree = "<group>"; };
 		9418B821191CCC26000D67D6 /* BCCameraModeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCCameraModeButton.m; sourceTree = "<group>"; };
 		9418B823191CCC8B000D67D6 /* BCStyleKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCStyleKit.h; sourceTree = "<group>"; };
@@ -111,7 +108,6 @@
 			isa = PBXGroup;
 			children = (
 				9418B7ED191CB8F1000D67D6 /* BeaconCam */,
-				9418B80C191CB8F1000D67D6 /* BeaconCamTests */,
 				9418B7E6191CB8F1000D67D6 /* Frameworks */,
 				9418B7E5191CB8F1000D67D6 /* Products */,
 			);
@@ -172,24 +168,6 @@
 				9418B7F0191CB8F1000D67D6 /* InfoPlist.strings */,
 				9418B7F3191CB8F1000D67D6 /* main.m */,
 				9418B7F5191CB8F1000D67D6 /* BeaconCam-Prefix.pch */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		9418B80C191CB8F1000D67D6 /* BeaconCamTests */ = {
-			isa = PBXGroup;
-			children = (
-				9418B812191CB8F1000D67D6 /* BeaconCamTests.m */,
-				9418B80D191CB8F1000D67D6 /* Supporting Files */,
-			);
-			path = BeaconCamTests;
-			sourceTree = "<group>";
-		};
-		9418B80D191CB8F1000D67D6 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				9418B80E191CB8F1000D67D6 /* BeaconCamTests-Info.plist */,
-				9418B80F191CB8F1000D67D6 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -316,14 +294,6 @@
 				9418B7FA191CB8F1000D67D6 /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		9418B80F191CB8F1000D67D6 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				9418B810191CB8F1000D67D6 /* en */,
-			);
-			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
