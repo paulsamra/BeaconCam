@@ -7,6 +7,7 @@
 //
 
 #import "BCAppDelegate.h"
+#import <Parse/Parse.h>
 
 @implementation BCAppDelegate
 
@@ -14,8 +15,11 @@
 {
     // Override point for customization after application launch.
     
-    [[UINavigationBar appearance] setTitleTextAttributes:@{ NSFontAttributeName : [UIFont fontWithName:@"Avenir-Light" size:20] }];
+    NSDictionary *attributes = @{ NSFontAttributeName : [UIFont fontWithName:@"Avenir-Light" size:20] };
+    [[UINavigationBar appearance] setTitleTextAttributes:attributes];
     [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:0.636 green:0.589 blue:0.701 alpha:1]];
+    
+    [Parse setApplicationId:@"LBH8ffWLcjD6u1udC4Oog1ZoA8LVHcHNbSzLmjbs" clientKey:@"nlFTQozY9XDWC0bxEQP90X2KCF8ZN2Zt7QMdemwB"];
     
     return YES;
 }

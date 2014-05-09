@@ -1,0 +1,25 @@
+//
+//  BCBeaconModeVC.m
+//  BeaconCam
+//
+//  Created by Ryan Khalili on 5/9/14.
+//  Copyright (c) 2014 Swipe Development. All rights reserved.
+//
+
+#import "BCBeaconModeVC.h"
+#import "BCManager.h"
+
+@interface BCBeaconModeVC ()
+
+@end
+
+@implementation BCBeaconModeVC
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    [[BCManager sharedManager] startListeningForBeacons];
+}
+
+@end

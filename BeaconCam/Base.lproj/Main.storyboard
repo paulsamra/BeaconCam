@@ -4,7 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
-        <!--InitialVC - Beacon Cam-->
+        <!--InitialVC - BeaconCam-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
                 <viewController id="vXZ-lx-hvc" customClass="BCInitialVC" sceneMemberID="viewController">
@@ -39,20 +39,22 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Beacon Cam" id="f7u-BU-x8U"/>
+                    <navigationItem key="navigationItem" title="BeaconCam" id="f7u-BU-x8U">
+                        <barButtonItem key="backBarButtonItem" title="Back" id="hoA-UM-aNI"/>
+                    </navigationItem>
                     <connections>
-                        <segue destination="OSZ-wt-J3J" kind="push" id="NQ6-ca-bHd"/>
-                        <segue destination="kP9-xE-66X" kind="push" id="BrX-qK-703"/>
+                        <segue destination="OSZ-wt-J3J" kind="push" identifier="cameraMode" id="NQ6-ca-bHd"/>
+                        <segue destination="kP9-xE-66X" kind="push" identifier="beaconMode" id="BrX-qK-703"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="589" y="104"/>
         </scene>
-        <!--View Controller-->
+        <!--Beacon ModeVC - Beacon Mode-->
         <scene sceneID="ddF-Tp-VSI">
             <objects>
-                <viewController id="kP9-xE-66X" sceneMemberID="viewController">
+                <viewController id="kP9-xE-66X" customClass="BCBeaconModeVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="etl-g1-DyZ"/>
                         <viewControllerLayoutGuide type="bottom" id="UNn-w4-dZi"/>
@@ -60,18 +62,27 @@
                     <view key="view" contentMode="scaleToFill" id="F3m-Hj-AbR">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="App is now in Beacon Mode." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="232" translatesAutoresizingMaskIntoConstraints="NO" id="KXn-Nu-SuK">
+                                <rect key="frame" x="44" y="265" width="232" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" id="36l-p8-prl"/>
+                    <navigationItem key="navigationItem" title="Beacon Mode" id="36l-p8-prl"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="t0f-UW-1J3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1132" y="628"/>
         </scene>
-        <!--View Controller-->
+        <!--Camera Mode OptionsVC - Options-->
         <scene sceneID="7NO-IL-llm">
             <objects>
-                <viewController id="OSZ-wt-J3J" sceneMemberID="viewController">
+                <viewController id="OSZ-wt-J3J" customClass="BCCameraModeOptionsVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="sdf-AT-t8d"/>
                         <viewControllerLayoutGuide type="bottom" id="lFI-p9-7YI"/>
@@ -79,13 +90,80 @@
                     <view key="view" contentMode="scaleToFill" id="kfX-ii-ZoJ">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yNu-wz-x0l" customClass="BCSubmitButton">
+                                <rect key="frame" x="70" y="369" width="180" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="pne-D0-pfp" kind="push" id="Fxv-vO-T1Z"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Who should be notified?" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AoT-Aa-j2v">
+                                <rect key="frame" x="54" y="110" width="212" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="Avenir-Light" family="Avenir" pointSize="18"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="E-Mail" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aBs-Wo-ria">
+                                <rect key="frame" x="20" y="182" width="49" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="Avenir-Light" family="Avenir" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="uVG-2W-OJL">
+                                <rect key="frame" x="100" y="173" width="200" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="Avenir-Light" family="Avenir" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" keyboardType="emailAddress"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="XC6-uO-lpA">
+                                <rect key="frame" x="100" y="225" width="200" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="Avenir-Light" family="Avenir" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" keyboardType="phonePad"/>
+                            </textField>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Phone #" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dtV-Ah-GYj">
+                                <rect key="frame" x="20" y="234" width="64" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="Avenir-Light" family="Avenir" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" id="m2G-ij-FvU"/>
+                    <navigationItem key="navigationItem" title="Options" id="m2G-ij-FvU"/>
+                    <connections>
+                        <outlet property="emailField" destination="uVG-2W-OJL" id="tWE-oV-nvR"/>
+                        <outlet property="phoneField" destination="XC6-uO-lpA" id="hpz-Rh-sqf"/>
+                        <outlet property="submitButton" destination="yNu-wz-x0l" id="9ni-9e-h7T"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="O8x-mD-46h" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1132" y="-495"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="eVm-x8-K06">
+            <objects>
+                <viewController id="pne-D0-pfp" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Klq-gM-faW"/>
+                        <viewControllerLayoutGuide type="bottom" id="M4J-53-LbL"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="hLm-vf-cRB">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="i5y-8C-z4z"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="H89-5u-8T9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1643" y="-495"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Isu-op-aH0">
