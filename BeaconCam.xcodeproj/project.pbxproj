@@ -14,13 +14,16 @@
 		9418B7F4191CB8F1000D67D6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9418B7F3191CB8F1000D67D6 /* main.m */; };
 		9418B7F8191CB8F1000D67D6 /* BCAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9418B7F7191CB8F1000D67D6 /* BCAppDelegate.m */; };
 		9418B7FB191CB8F1000D67D6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9418B7F9191CB8F1000D67D6 /* Main.storyboard */; };
-		9418B7FE191CB8F1000D67D6 /* BCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9418B7FD191CB8F1000D67D6 /* BCViewController.m */; };
+		9418B7FE191CB8F1000D67D6 /* BCInitialVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 9418B7FD191CB8F1000D67D6 /* BCInitialVC.m */; };
 		9418B800191CB8F1000D67D6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9418B7FF191CB8F1000D67D6 /* Images.xcassets */; };
 		9418B807191CB8F1000D67D6 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9418B806191CB8F1000D67D6 /* XCTest.framework */; };
 		9418B808191CB8F1000D67D6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9418B7E7191CB8F1000D67D6 /* Foundation.framework */; };
 		9418B809191CB8F1000D67D6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9418B7EB191CB8F1000D67D6 /* UIKit.framework */; };
 		9418B811191CB8F1000D67D6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9418B80F191CB8F1000D67D6 /* InfoPlist.strings */; };
 		9418B813191CB8F1000D67D6 /* BeaconCamTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9418B812191CB8F1000D67D6 /* BeaconCamTests.m */; };
+		9418B822191CCC26000D67D6 /* BCCameraModeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9418B821191CCC26000D67D6 /* BCCameraModeButton.m */; };
+		9418B825191CCC8B000D67D6 /* BCStyleKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 9418B824191CCC8B000D67D6 /* BCStyleKit.m */; };
+		9418B828191CCCE3000D67D6 /* BCBeaconModeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9418B827191CCCE3000D67D6 /* BCBeaconModeButton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,14 +48,20 @@
 		9418B7F6191CB8F1000D67D6 /* BCAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BCAppDelegate.h; sourceTree = "<group>"; };
 		9418B7F7191CB8F1000D67D6 /* BCAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BCAppDelegate.m; sourceTree = "<group>"; };
 		9418B7FA191CB8F1000D67D6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		9418B7FC191CB8F1000D67D6 /* BCViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BCViewController.h; sourceTree = "<group>"; };
-		9418B7FD191CB8F1000D67D6 /* BCViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BCViewController.m; sourceTree = "<group>"; };
+		9418B7FC191CB8F1000D67D6 /* BCInitialVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BCInitialVC.h; sourceTree = "<group>"; };
+		9418B7FD191CB8F1000D67D6 /* BCInitialVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BCInitialVC.m; sourceTree = "<group>"; };
 		9418B7FF191CB8F1000D67D6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		9418B805191CB8F1000D67D6 /* BeaconCamTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BeaconCamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9418B806191CB8F1000D67D6 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		9418B80E191CB8F1000D67D6 /* BeaconCamTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BeaconCamTests-Info.plist"; sourceTree = "<group>"; };
 		9418B810191CB8F1000D67D6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		9418B812191CB8F1000D67D6 /* BeaconCamTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BeaconCamTests.m; sourceTree = "<group>"; };
+		9418B820191CCC26000D67D6 /* BCCameraModeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCCameraModeButton.h; sourceTree = "<group>"; };
+		9418B821191CCC26000D67D6 /* BCCameraModeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCCameraModeButton.m; sourceTree = "<group>"; };
+		9418B823191CCC8B000D67D6 /* BCStyleKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCStyleKit.h; sourceTree = "<group>"; };
+		9418B824191CCC8B000D67D6 /* BCStyleKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCStyleKit.m; sourceTree = "<group>"; };
+		9418B826191CCCE3000D67D6 /* BCBeaconModeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCBeaconModeButton.h; sourceTree = "<group>"; };
+		9418B827191CCCE3000D67D6 /* BCBeaconModeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCBeaconModeButton.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,11 +121,13 @@
 		9418B7ED191CB8F1000D67D6 /* BeaconCam */ = {
 			isa = PBXGroup;
 			children = (
+				9418B829191CD17B000D67D6 /* View Controllers */,
+				9418B823191CCC8B000D67D6 /* BCStyleKit.h */,
+				9418B824191CCC8B000D67D6 /* BCStyleKit.m */,
+				9418B81C191CCBF4000D67D6 /* Buttons */,
 				9418B7F6191CB8F1000D67D6 /* BCAppDelegate.h */,
 				9418B7F7191CB8F1000D67D6 /* BCAppDelegate.m */,
 				9418B7F9191CB8F1000D67D6 /* Main.storyboard */,
-				9418B7FC191CB8F1000D67D6 /* BCViewController.h */,
-				9418B7FD191CB8F1000D67D6 /* BCViewController.m */,
 				9418B7FF191CB8F1000D67D6 /* Images.xcassets */,
 				9418B7EE191CB8F1000D67D6 /* Supporting Files */,
 			);
@@ -150,6 +161,26 @@
 				9418B80F191CB8F1000D67D6 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		9418B81C191CCBF4000D67D6 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				9418B820191CCC26000D67D6 /* BCCameraModeButton.h */,
+				9418B821191CCC26000D67D6 /* BCCameraModeButton.m */,
+				9418B826191CCCE3000D67D6 /* BCBeaconModeButton.h */,
+				9418B827191CCCE3000D67D6 /* BCBeaconModeButton.m */,
+			);
+			path = Buttons;
+			sourceTree = "<group>";
+		};
+		9418B829191CD17B000D67D6 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				9418B7FC191CB8F1000D67D6 /* BCInitialVC.h */,
+				9418B7FD191CB8F1000D67D6 /* BCInitialVC.m */,
+			);
+			path = "View Controllers";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -250,9 +281,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9418B7FE191CB8F1000D67D6 /* BCViewController.m in Sources */,
+				9418B7FE191CB8F1000D67D6 /* BCInitialVC.m in Sources */,
 				9418B7F4191CB8F1000D67D6 /* main.m in Sources */,
+				9418B822191CCC26000D67D6 /* BCCameraModeButton.m in Sources */,
+				9418B825191CCC8B000D67D6 /* BCStyleKit.m in Sources */,
 				9418B7F8191CB8F1000D67D6 /* BCAppDelegate.m in Sources */,
+				9418B828191CCCE3000D67D6 /* BCBeaconModeButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -380,6 +414,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BeaconCam/BeaconCam-Prefix.pch";
 				INFOPLIST_FILE = "BeaconCam/BeaconCam-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -393,6 +428,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BeaconCam/BeaconCam-Prefix.pch";
 				INFOPLIST_FILE = "BeaconCam/BeaconCam-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

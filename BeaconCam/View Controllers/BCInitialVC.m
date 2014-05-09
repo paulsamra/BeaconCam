@@ -6,13 +6,13 @@
 //  Copyright (c) 2014 Swipe Development. All rights reserved.
 //
 
-#import "BCViewController.h"
+#import "BCInitialVC.h"
 
-@interface BCViewController ()
+@interface BCInitialVC ()
 
 @end
 
-@implementation BCViewController
+@implementation BCInitialVC
 
 - (void)viewDidLoad
 {
@@ -24,6 +24,16 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)beaconModeSelected
+{
+    
+}
+
+- (IBAction)cameraModeSelected
+{
+    
 }
 
 @end
