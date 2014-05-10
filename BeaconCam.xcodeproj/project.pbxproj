@@ -16,11 +16,10 @@
 		9418B7FB191CB8F1000D67D6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9418B7F9191CB8F1000D67D6 /* Main.storyboard */; };
 		9418B7FE191CB8F1000D67D6 /* BCInitialVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 9418B7FD191CB8F1000D67D6 /* BCInitialVC.m */; };
 		9418B800191CB8F1000D67D6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9418B7FF191CB8F1000D67D6 /* Images.xcassets */; };
-		9418B822191CCC26000D67D6 /* BCCameraModeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9418B821191CCC26000D67D6 /* BCCameraModeButton.m */; };
+		9418B822191CCC26000D67D6 /* BCServerButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9418B821191CCC26000D67D6 /* BCServerButton.m */; };
 		9418B825191CCC8B000D67D6 /* BCStyleKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 9418B824191CCC8B000D67D6 /* BCStyleKit.m */; };
-		9418B828191CCCE3000D67D6 /* BCBeaconModeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9418B827191CCCE3000D67D6 /* BCBeaconModeButton.m */; };
-		9418B82C191CD242000D67D6 /* BCBeaconModeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 9418B82B191CD242000D67D6 /* BCBeaconModeVC.m */; };
-		9418B82F191CD267000D67D6 /* BCCameraModeOptionsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 9418B82E191CD267000D67D6 /* BCCameraModeOptionsVC.m */; };
+		9418B828191CCCE3000D67D6 /* BCClientButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9418B827191CCCE3000D67D6 /* BCClientButton.m */; };
+		9418B82F191CD267000D67D6 /* BCCameraVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 9418B82E191CD267000D67D6 /* BCCameraVC.m */; };
 		9418B832191CE046000D67D6 /* BCManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9418B831191CE046000D67D6 /* BCManager.m */; };
 		9418B834191CE063000D67D6 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9418B833191CE063000D67D6 /* CoreLocation.framework */; };
 		9418B836191CE066000D67D6 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9418B835191CE066000D67D6 /* CoreBluetooth.framework */; };
@@ -34,6 +33,8 @@
 		9418B846191CE69D000D67D6 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9418B845191CE69D000D67D6 /* StoreKit.framework */; };
 		9418B848191CE6A3000D67D6 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9418B847191CE6A3000D67D6 /* SystemConfiguration.framework */; };
 		9418B84B191CFF38000D67D6 /* BCSubmitButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9418B84A191CFF38000D67D6 /* BCSubmitButton.m */; };
+		94F7CFCC191DD926008E783D /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94F7CFCB191DD926008E783D /* AVFoundation.framework */; };
+		94F7CFCF191DF3BB008E783D /* BCClientVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F7CFCE191DF3BB008E783D /* BCClientVC.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,16 +53,14 @@
 		9418B7FD191CB8F1000D67D6 /* BCInitialVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BCInitialVC.m; sourceTree = "<group>"; };
 		9418B7FF191CB8F1000D67D6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		9418B806191CB8F1000D67D6 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		9418B820191CCC26000D67D6 /* BCCameraModeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCCameraModeButton.h; sourceTree = "<group>"; };
-		9418B821191CCC26000D67D6 /* BCCameraModeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCCameraModeButton.m; sourceTree = "<group>"; };
+		9418B820191CCC26000D67D6 /* BCServerButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCServerButton.h; sourceTree = "<group>"; };
+		9418B821191CCC26000D67D6 /* BCServerButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCServerButton.m; sourceTree = "<group>"; };
 		9418B823191CCC8B000D67D6 /* BCStyleKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCStyleKit.h; sourceTree = "<group>"; };
 		9418B824191CCC8B000D67D6 /* BCStyleKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCStyleKit.m; sourceTree = "<group>"; };
-		9418B826191CCCE3000D67D6 /* BCBeaconModeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCBeaconModeButton.h; sourceTree = "<group>"; };
-		9418B827191CCCE3000D67D6 /* BCBeaconModeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCBeaconModeButton.m; sourceTree = "<group>"; };
-		9418B82A191CD242000D67D6 /* BCBeaconModeVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCBeaconModeVC.h; sourceTree = "<group>"; };
-		9418B82B191CD242000D67D6 /* BCBeaconModeVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCBeaconModeVC.m; sourceTree = "<group>"; };
-		9418B82D191CD267000D67D6 /* BCCameraModeOptionsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCCameraModeOptionsVC.h; sourceTree = "<group>"; };
-		9418B82E191CD267000D67D6 /* BCCameraModeOptionsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCCameraModeOptionsVC.m; sourceTree = "<group>"; };
+		9418B826191CCCE3000D67D6 /* BCClientButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCClientButton.h; sourceTree = "<group>"; };
+		9418B827191CCCE3000D67D6 /* BCClientButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCClientButton.m; sourceTree = "<group>"; };
+		9418B82D191CD267000D67D6 /* BCCameraVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCCameraVC.h; sourceTree = "<group>"; };
+		9418B82E191CD267000D67D6 /* BCCameraVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCCameraVC.m; sourceTree = "<group>"; };
 		9418B830191CE046000D67D6 /* BCManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCManager.h; sourceTree = "<group>"; };
 		9418B831191CE046000D67D6 /* BCManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCManager.m; sourceTree = "<group>"; };
 		9418B833191CE063000D67D6 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -77,6 +76,9 @@
 		9418B847191CE6A3000D67D6 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		9418B849191CFF38000D67D6 /* BCSubmitButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCSubmitButton.h; sourceTree = "<group>"; };
 		9418B84A191CFF38000D67D6 /* BCSubmitButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCSubmitButton.m; sourceTree = "<group>"; };
+		94F7CFCB191DD926008E783D /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		94F7CFCD191DF3BB008E783D /* BCClientVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCClientVC.h; sourceTree = "<group>"; };
+		94F7CFCE191DF3BB008E783D /* BCClientVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCClientVC.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +86,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94F7CFCC191DD926008E783D /* AVFoundation.framework in Frameworks */,
 				9418B848191CE6A3000D67D6 /* SystemConfiguration.framework in Frameworks */,
 				9418B846191CE69D000D67D6 /* StoreKit.framework in Frameworks */,
 				9418B844191CE697000D67D6 /* Security.framework in Frameworks */,
@@ -124,6 +127,7 @@
 		9418B7E6191CB8F1000D67D6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				94F7CFCB191DD926008E783D /* AVFoundation.framework */,
 				9418B847191CE6A3000D67D6 /* SystemConfiguration.framework */,
 				9418B845191CE69D000D67D6 /* StoreKit.framework */,
 				9418B843191CE697000D67D6 /* Security.framework */,
@@ -175,10 +179,10 @@
 		9418B81C191CCBF4000D67D6 /* Buttons */ = {
 			isa = PBXGroup;
 			children = (
-				9418B820191CCC26000D67D6 /* BCCameraModeButton.h */,
-				9418B821191CCC26000D67D6 /* BCCameraModeButton.m */,
-				9418B826191CCCE3000D67D6 /* BCBeaconModeButton.h */,
-				9418B827191CCCE3000D67D6 /* BCBeaconModeButton.m */,
+				9418B820191CCC26000D67D6 /* BCServerButton.h */,
+				9418B821191CCC26000D67D6 /* BCServerButton.m */,
+				9418B826191CCCE3000D67D6 /* BCClientButton.h */,
+				9418B827191CCCE3000D67D6 /* BCClientButton.m */,
 				9418B849191CFF38000D67D6 /* BCSubmitButton.h */,
 				9418B84A191CFF38000D67D6 /* BCSubmitButton.m */,
 			);
@@ -190,10 +194,10 @@
 			children = (
 				9418B7FC191CB8F1000D67D6 /* BCInitialVC.h */,
 				9418B7FD191CB8F1000D67D6 /* BCInitialVC.m */,
-				9418B82A191CD242000D67D6 /* BCBeaconModeVC.h */,
-				9418B82B191CD242000D67D6 /* BCBeaconModeVC.m */,
-				9418B82D191CD267000D67D6 /* BCCameraModeOptionsVC.h */,
-				9418B82E191CD267000D67D6 /* BCCameraModeOptionsVC.m */,
+				9418B82D191CD267000D67D6 /* BCCameraVC.h */,
+				9418B82E191CD267000D67D6 /* BCCameraVC.m */,
+				94F7CFCD191DF3BB008E783D /* BCClientVC.h */,
+				94F7CFCE191DF3BB008E783D /* BCClientVC.m */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -267,13 +271,13 @@
 				9418B7FE191CB8F1000D67D6 /* BCInitialVC.m in Sources */,
 				9418B7F4191CB8F1000D67D6 /* main.m in Sources */,
 				9418B832191CE046000D67D6 /* BCManager.m in Sources */,
-				9418B82F191CD267000D67D6 /* BCCameraModeOptionsVC.m in Sources */,
-				9418B822191CCC26000D67D6 /* BCCameraModeButton.m in Sources */,
-				9418B82C191CD242000D67D6 /* BCBeaconModeVC.m in Sources */,
+				9418B82F191CD267000D67D6 /* BCCameraVC.m in Sources */,
+				9418B822191CCC26000D67D6 /* BCServerButton.m in Sources */,
 				9418B825191CCC8B000D67D6 /* BCStyleKit.m in Sources */,
+				94F7CFCF191DF3BB008E783D /* BCClientVC.m in Sources */,
 				9418B7F8191CB8F1000D67D6 /* BCAppDelegate.m in Sources */,
 				9418B84B191CFF38000D67D6 /* BCSubmitButton.m in Sources */,
-				9418B828191CCCE3000D67D6 /* BCBeaconModeButton.m in Sources */,
+				9418B828191CCCE3000D67D6 /* BCClientButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

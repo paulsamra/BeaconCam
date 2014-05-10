@@ -6,10 +6,10 @@
 //  Copyright (c) 2014 Swipe Development. All rights reserved.
 //
 
-#import "BCBeaconModeButton.h"
+#import "BCClientButton.h"
 #import "BCStyleKit.h"
 
-@implementation BCBeaconModeButton
+@implementation BCClientButton
 
 - (void)setHighlighted:(BOOL)highlighted
 {
@@ -19,7 +19,7 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    [BCStyleKit drawModeButtonWithFrame:rect text:@"Beacon Mode" highlighted:self.highlighted];
+    [BCStyleKit drawModeButtonWithFrame:rect text:@"Client" highlighted:self.highlighted];
 }
 
 @end

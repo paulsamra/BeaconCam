@@ -6,10 +6,10 @@
 //  Copyright (c) 2014 Swipe Development. All rights reserved.
 //
 
-#import "BCCameraModeButton.h"
+#import "BCServerButton.h"
 #import "BCStyleKit.h"
 
-@implementation BCCameraModeButton
+@implementation BCServerButton
 
 - (void)setHighlighted:(BOOL)highlighted
 {
@@ -19,7 +19,7 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    [BCStyleKit drawModeButtonWithFrame:rect text:@"Camera Mode" highlighted:self.highlighted];
+    [BCStyleKit drawModeButtonWithFrame:rect text:@"Server" highlighted:self.highlighted];
 }
 
 @end

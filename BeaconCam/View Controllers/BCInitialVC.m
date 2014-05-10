@@ -17,18 +17,16 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    
 }
 
 - (IBAction)beaconModeSelected
 {
-    [self performSegueWithIdentifier:@"beaconMode" sender:nil];
+    [self performSegueWithIdentifier:@"clientMode" sender:nil];
 }
 
 - (IBAction)cameraModeSelected
 {
-    [self performSegueWithIdentifier:@"cameraMode" sender:nil];
+    [self performSegueWithIdentifier:@"serverMode" sender:nil];
 }
 
 @end

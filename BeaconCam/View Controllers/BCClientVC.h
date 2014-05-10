@@ -1,5 +1,5 @@
 //
-//  BCBeaconModeVC.h
+//  BCClientVC.h
 //  BeaconCam
 //
 //  Created by Ryan Khalili on 5/9/14.
@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BCBeaconModeVC : UIViewController
+@interface BCClientVC : UIViewController
+
+@property (weak, nonatomic) IBOutlet UILabel *beaconLabel;
 
 @end

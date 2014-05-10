@@ -8,12 +8,15 @@
 
 #import "BCAppDelegate.h"
 #import <Parse/Parse.h>
+#import "BCManager.h"
 
 @implementation BCAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    
+    [BCManager sharedManager];
     
     NSDictionary *attributes = @{ NSFontAttributeName : [UIFont fontWithName:@"Avenir-Light" size:20] };
     [[UINavigationBar appearance] setTitleTextAttributes:attributes];

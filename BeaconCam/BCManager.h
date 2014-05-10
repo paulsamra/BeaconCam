@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+#define kBeaconFound       @"beacon_found"
+#define kExitedBeconRegion @"exited_beacon_region"
+
 @interface BCManager : NSObject
 
 + (BCManager *)sharedManager;
@@ -17,7 +20,5 @@
 
 - (void)startListeningForBeacons;
 - (void)stopListeningForBeacons;
-
-- (BOOL)beaconHasBeenFound;
 
 @end

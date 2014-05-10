@@ -22,6 +22,7 @@ static NSString *kBeaconListenerUUID = @"B591671C-6D42-4EC5-A842-A80416ADD65D";
 @property (strong, nonatomic) CLBeaconRegion      *beaconRegion;
 
 @property (nonatomic) BOOL beaconFound;
+@property (nonatomic) BOOL isListeningForBeacons;
 
 @end
 
@@ -55,66 +56,109 @@ static NSString *kBeaconListenerUUID = @"B591671C-6D42-4EC5-A842-A80416ADD65D";
     return self;
 }
 
+// Start broadcasting as iBeacon.
 - (void)startBroadcasting
 {
-    NSUUID *proximityUUID = [[NSUUID alloc] initWithUUIDString:kBeaconUUID];
-    
-    CLBeaconRegion *beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:proximityUUID identifier:kBeaconID];
-    
-    NSDictionary *peripheralData = [beaconRegion peripheralDataWithMeasuredPower:nil];
+    NSDictionary *peripheralData = [self.beaconRegion peripheralDataWithMeasuredPower:nil];
     
     [self.peripheralManager startAdvertising:peripheralData];
 }
 
+// Stop broadcasting as iBeacon.
 - (void)stopBroadcasting
 {
     [self.peripheralManager stopAdvertising];
 }
 
+// Required CBPeripheralManager delegate method.
+- (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral error:(NSError *)error
+{
+    if( !error )
+    {
+        NSLog(@"Started advertising.");
+    }
+    
+    else
+    {
+        NSLog(@"Error advertising.");
+    }
+}
+
+// Peripheral manager state update.
 - (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral
 {
-    
+    switch( peripheral.state )
+    {
+        case CBPeripheralManagerStateUnknown:      NSLog(@"Unknown");      break;
+        case CBPeripheralManagerStateResetting:    NSLog(@"Resetting");    break;
+        case CBPeripheralManagerStateUnsupported:  NSLog(@"Unsupported");  break;
+        case CBPeripheralManagerStateUnauthorized: NSLog(@"Unauthorized"); break;
+        case CBPeripheralManagerStatePoweredOff:   NSLog(@"Powered Off");  break;
+        case CBPeripheralManagerStatePoweredOn:    NSLog(@"Powered On");   break;
+    }
 }
 
+// Start ranging for iBeacons.
 - (void)startListeningForBeacons
 {
-    NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:kBeaconListenerUUID];
-    
-    self.beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:uuid identifier:kBeaconID];
-    
-    [self.locationManager startMonitoringForRegion:self.beaconRegion];
-    
-    NSLog(@"started");
+    [self.locationManager startRangingBeaconsInRegion:self.beaconRegion];
 }
 
+// Stop ranging for iBeacons.
 - (void)stopListeningForBeacons
 {
     [self.locationManager stopRangingBeaconsInRegion:self.beaconRegion];
 }
 
+// Entered iBeacon region.
+- (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
+{
+    NSLog(@"Entered iBeacon region.");
+}
+
+- (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
+{
+    NSLog(@"Exited iBeacon region.");
+    [[NSNotificationCenter defaultCenter] postNotificationName:kExitedBeconRegion object:nil];
+}
+
+// Determined region state.
+- (void)locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region
+{
+    switch( state )
+    {
+        case CLRegionStateInside:  NSLog(@"Inside Region");  break;
+        case CLRegionStateOutside: NSLog(@"Outside Region"); break;
+        case CLRegionStateUnknown: NSLog(@"Unknown State");  break;
+    }
+}
+
+// iBeacon has been ranged.
 - (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region
 {
-    NSLog(@"did range");
+    CLBeacon *beacon = [beacons lastObject];
+    NSString *rssi = [NSString stringWithFormat:@"%ld", beacon.rssi];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kBeaconFound object:rssi];
+    [self.locationManager requestStateForRegion:self.beaconRegion];
 }
 
+// iBeacon ranging failed.
 - (void)locationManager:(CLLocationManager *)manager rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region withError:(NSError *)error
 {
-    NSLog(@"ranging failed");
+    NSLog(@"iBeacon ranging failed with error: %@", error.localizedDescription);
 }
 
-- (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error
+- (CLBeaconRegion *)beaconRegion
 {
+    if( !_beaconRegion )
+    {
+        NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:kBeaconUUID];
+        _beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:uuid identifier:kBeaconID];
+        _beaconRegion.notifyEntryStateOnDisplay = YES;
+    }
     
-}
-
-- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
-{
-    
-}
-
-- (BOOL)beaconHasBeenFound
-{
-    return YES;
+    return _beaconRegion;
 }
 
 @end

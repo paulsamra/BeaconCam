@@ -1,5 +1,5 @@
 //
-//  BCBeaconModeButton.h
+//  BCCameraModeButton.h
 //  BeaconCam
 //
 //  Created by Ryan Khalili on 5/9/14.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BCBeaconModeButton : UIButton
+@interface BCServerButton : UIButton
 
 @end
