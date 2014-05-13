@@ -12,8 +12,6 @@
 
 static NSString *kBeaconID           = @"com.swipedevelopment.beaconCam";
 static NSString *kBeaconUUID         = @"4B5B9305-BA7F-4E69-B985-FB505253D81F";
-static NSString *kBeaconListenerUUID = @"B591671C-6D42-4EC5-A842-A80416ADD65D";
-
 
 @interface BCManager() <CBPeripheralManagerDelegate, CLLocationManagerDelegate>
 
@@ -21,7 +19,7 @@ static NSString *kBeaconListenerUUID = @"B591671C-6D42-4EC5-A842-A80416ADD65D";
 @property (strong, nonatomic) CBPeripheralManager *peripheralManager;
 @property (strong, nonatomic) CLBeaconRegion      *beaconRegion;
 
-@property (nonatomic) BOOL beaconFound;
+@property (nonatomic) BOOL inBeaconRegion;
 @property (nonatomic) BOOL isListeningForBeacons;
 
 @end
@@ -101,6 +99,7 @@ static NSString *kBeaconListenerUUID = @"B591671C-6D42-4EC5-A842-A80416ADD65D";
 // Start ranging for iBeacons.
 - (void)startListeningForBeacons
 {
+    [self.locationManager requestStateForRegion:self.beaconRegion];
     [self.locationManager startRangingBeaconsInRegion:self.beaconRegion];
 }
 
@@ -113,11 +112,13 @@ static NSString *kBeaconListenerUUID = @"B591671C-6D42-4EC5-A842-A80416ADD65D";
 // Entered iBeacon region.
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
+    self.inBeaconRegion = YES;
     NSLog(@"Entered iBeacon region.");
 }
 
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
+    self.inBeaconRegion = NO;
     NSLog(@"Exited iBeacon region.");
     [[NSNotificationCenter defaultCenter] postNotificationName:kExitedBeconRegion object:nil];
 }
@@ -127,9 +128,9 @@ static NSString *kBeaconListenerUUID = @"B591671C-6D42-4EC5-A842-A80416ADD65D";
 {
     switch( state )
     {
-        case CLRegionStateInside:  NSLog(@"Inside Region");  break;
-        case CLRegionStateOutside: NSLog(@"Outside Region"); break;
-        case CLRegionStateUnknown: NSLog(@"Unknown State");  break;
+        case CLRegionStateInside:  NSLog(@"Inside Region");  self.inBeaconRegion = YES; break;
+        case CLRegionStateOutside: NSLog(@"Outside Region"); self.inBeaconRegion = NO;  break;
+        case CLRegionStateUnknown: NSLog(@"Unknown State");  self.inBeaconRegion = NO;  break;
     }
 }
 
@@ -137,7 +138,7 @@ static NSString *kBeaconListenerUUID = @"B591671C-6D42-4EC5-A842-A80416ADD65D";
 - (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region
 {
     CLBeacon *beacon = [beacons lastObject];
-    NSString *rssi = [NSString stringWithFormat:@"%ld", beacon.rssi];
+    NSString *rssi = [NSString stringWithFormat:@"%ld", (long)beacon.rssi];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kBeaconFound object:rssi];
     [self.locationManager requestStateForRegion:self.beaconRegion];

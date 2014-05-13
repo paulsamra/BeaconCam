@@ -23,11 +23,11 @@
     
     [[BCManager sharedManager] startListeningForBeacons];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(foundBeaconNotification:) name:kBeaconFound object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(exitedBeaconRegion) name:kExitedBeconRegion object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(foundBeacon:) name:kBeaconFound object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(exitedRegion) name:kExitedBeconRegion object:nil];
 }
 
-- (void)foundBeaconNotification:(NSNotification *)notification
+- (void)foundBeacon:(NSNotification *)notification
 {
     NSLog(@"%@", notification.object);
     self.beaconLabel.text = notification.object;
@@ -36,11 +36,19 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [[BCManager sharedManager] stopListeningForBeacons];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)exitedBeaconRegion
+- (void)exitedRegion
 {
     self.beaconLabel.text = @"No Beacon Found";
+}
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
 }
 
 @end

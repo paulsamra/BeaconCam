@@ -9,11 +9,15 @@
 #import "BCCameraVC.h"
 #import "BCManager.h"
 
-@interface BCCameraVC ()
+@interface BCCameraVC()
 
-@property (strong, nonatomic) AVCaptureSession *captureSession;
+@property (strong, nonatomic) UIView                        *motionView;
+@property (strong, nonatomic) CIDetector                    *faceDetector;
+@property (strong, nonatomic) AVCaptureSession              *captureSession;
+@property (strong, nonatomic) GPUImageOutput<GPUImageInput> *filter;
 
 @end
+
 
 @implementation BCCameraVC
 
@@ -21,76 +25,77 @@
 {
     [super viewDidLoad];
     
-    [self.navigationController setNavigationBarHidden:YES];
-    
+    [self setupCamera];
+        
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
-    
-    self.captureSession = [[AVCaptureSession alloc] init];
-    [self.captureSession setSessionPreset:AVCaptureSessionPresetHigh];
-    
-    AVCaptureDeviceInput *videoInput = [AVCaptureDeviceInput deviceInputWithDevice:[self backCamera] error:nil];
-    if( [self.captureSession canAddInput:videoInput] )
-    {
-        [self.captureSession addInput:videoInput];
-    }
-    
-    AVCaptureStillImageOutput *imageOutput = [[AVCaptureStillImageOutput alloc] init];
-    NSDictionary *outputSettings = @{ AVVideoCodecKey : AVVideoCodecJPEG };
-    [imageOutput setOutputSettings:outputSettings];
-    
-    if( [self.captureSession canAddOutput:imageOutput] )
-    {
-        [self.captureSession addOutput:imageOutput];
-    }
-    
-    self.videoLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.captureSession];
-    
-    [self.view.layer setMasksToBounds:YES];
-    
-    CGSize landscapeSize;
-    landscapeSize.width = self.view.bounds.size.height;
-    landscapeSize.height = self.view.bounds.size.width;
-    
-    CGRect landscapeRect;
-    landscapeRect.size = landscapeSize;
-    landscapeRect.origin = self.view.bounds.origin;
-    
-    self.videoLayer.frame = landscapeRect;
-    
-    if(self.videoLayer.connection.supportsVideoOrientation)
-    {
-        self.videoLayer.connection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
-    }
-    
-    [self.videoLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
-    [self.view.layer addSublayer:self.videoLayer];
-    
-    [self.captureSession startRunning];
     
     [[BCManager sharedManager] startBroadcasting];
 }
 
-- (AVCaptureDevice *)cameraWithPosition:(AVCaptureDevicePosition)position
+- (void)setupCamera
 {
-    NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+    self.videoCamera = [[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPresetHigh cameraPosition:AVCaptureDevicePositionBack];
     
-    for (AVCaptureDevice *device in devices)
+    self.videoCamera.outputImageOrientation = UIInterfaceOrientationLandscapeLeft;
+    
+    self.filter = [[GPUImageMotionDetector alloc] init];
+    [(GPUImageMotionDetector *)self.filter setLowPassFilterStrength:0.5];
+    [self.videoCamera addTarget:self.filter];
+    
+    GPUImageView *filterView = (GPUImageView *)self.view;
+    
+    self.motionView = [[UIView alloc] initWithFrame:CGRectMake(100.0, 100.0, 100.0, 100.0)];
+    self.motionView.layer.borderWidth = 1;
+    self.motionView.layer.borderColor = [[UIColor redColor] CGColor];
+    [self.view addSubview:self.motionView];
+    self.motionView.hidden = YES;
+    
+    __unsafe_unretained BCCameraVC *weakSelf = self;
+    [(GPUImageMotionDetector *)self.filter setMotionDetectionBlock:
+    ^(CGPoint motionCentroid, CGFloat motionIntensity, CMTime frameTime)
     {
-        if ( [device position] == position )
+        if( motionIntensity > 0.01 )
         {
-            return device;
+            CGFloat motionBoxWidth = 1500.0 * motionIntensity;
+            CGSize viewBounds = weakSelf.view.bounds.size;
+            dispatch_async(dispatch_get_main_queue(), ^
+            {
+                weakSelf->_motionView.frame = CGRectMake(round(viewBounds.width * motionCentroid.x - motionBoxWidth / 2.0), round(viewBounds.height * motionCentroid.y - motionBoxWidth / 2.0), motionBoxWidth, motionBoxWidth);
+                weakSelf->_motionView.hidden = NO;
+            });
+            
         }
-    }
+        
+        else
+        {
+            dispatch_async(dispatch_get_main_queue(), ^
+            {
+                weakSelf->_motionView.hidden = YES;
+            });
+        }
+    }];
     
-    return nil;
-}
-
-- (AVCaptureDevice *)backCamera
-{
-    return [self cameraWithPosition:AVCaptureDevicePositionBack];
+    [self.videoCamera addTarget:filterView];
+    
+    [self.videoCamera startCameraCapture];
 }
 
 - (BOOL)prefersStatusBarHidden
+{
+    return YES;
+}
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskLandscapeLeft;
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+{
+    return UIInterfaceOrientationLandscapeLeft;
+}
+
+- (BOOL)shouldAutorotate
 {
     return YES;
 }

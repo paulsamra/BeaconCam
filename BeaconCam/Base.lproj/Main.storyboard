@@ -13,15 +13,12 @@
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
-                        <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9bw-hU-FoC" customClass="BCClientButton">
-                                <rect key="frame" x="54" y="154" width="180" height="50"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9bw-hU-FoC" customClass="BCClientButton">
+                                <rect key="frame" x="70" y="158" width="180" height="67"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="180" id="Fm3-uE-TwV"/>
-                                </constraints>
                                 <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -29,12 +26,9 @@
                                     <action selector="beaconModeSelected" destination="vXZ-lx-hvc" eventType="touchUpInside" id="cH1-x1-2bS"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3B2-d7-HZ7" customClass="BCServerButton">
-                                <rect key="frame" x="332" y="154" width="180" height="50"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3B2-d7-HZ7" customClass="BCServerButton">
+                                <rect key="frame" x="70" y="357" width="180" height="69"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="180" id="UyI-PF-hR6"/>
-                                </constraints>
                                 <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -44,25 +38,16 @@
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="3B2-d7-HZ7" secondAttribute="bottom" constant="116" id="3J7-zN-rZF"/>
-                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="9bw-hU-FoC" secondAttribute="bottom" constant="116" id="QMP-DI-c04"/>
-                            <constraint firstItem="9bw-hU-FoC" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="54" id="QxE-BP-YPH"/>
-                            <constraint firstAttribute="trailing" secondItem="3B2-d7-HZ7" secondAttribute="trailing" constant="56" id="dVg-SF-VaY"/>
-                            <constraint firstItem="9bw-hU-FoC" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="90" id="gRD-Tv-hhz"/>
-                            <constraint firstItem="3B2-d7-HZ7" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" constant="90" id="zkn-Wl-P0P"/>
-                        </constraints>
-                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <navigationItem key="navigationItem" title="BeaconCam" id="f7u-BU-x8U">
                         <barButtonItem key="backBarButtonItem" title="Back" id="hoA-UM-aNI"/>
                     </navigationItem>
-                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <connections>
                         <outlet property="beaconModeButton" destination="9bw-hU-FoC" id="1Gv-np-qNE"/>
                         <outlet property="cameraModeButton" destination="3B2-d7-HZ7" id="0dY-jB-jhR"/>
-                        <segue destination="OSZ-wt-J3J" kind="push" identifier="serverMode" id="NQ6-ca-bHd"/>
                         <segue destination="FwW-e0-g8e" kind="push" identifier="clientMode" id="hyG-qR-joQ"/>
+                        <segue destination="OSZ-wt-J3J" kind="modal" identifier="serverMode" id="loA-DI-BFT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
@@ -78,11 +63,11 @@
                         <viewControllerLayoutGuide type="bottom" id="mYk-L9-IBO"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="m0y-4n-N89">
-                        <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K9b-uV-rlt">
-                                <rect key="frame" x="104" y="112" width="361" height="95"/>
+                                <rect key="frame" x="98" y="251" width="125" height="66"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -90,7 +75,6 @@
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <navigationItem key="navigationItem" id="FVU-qa-77i"/>
                     <connections>
@@ -109,17 +93,18 @@
                         <viewControllerLayoutGuide type="top" id="sdf-AT-t8d"/>
                         <viewControllerLayoutGuide type="bottom" id="lFI-p9-7YI"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="kfX-ii-ZoJ">
+                    <view key="view" contentMode="scaleToFill" id="kfX-ii-ZoJ" customClass="GPUImageView">
                         <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <navigationItem key="navigationItem" id="m2G-ij-FvU"/>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="O8x-mD-46h" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1374" y="-429"/>
+            <point key="canvasLocation" x="1374" y="-313"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Isu-op-aH0">

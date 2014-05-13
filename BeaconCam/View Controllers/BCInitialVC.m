@@ -29,4 +29,9 @@
     [self performSegueWithIdentifier:@"serverMode" sender:nil];
 }
 
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
 @end
