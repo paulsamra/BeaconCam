@@ -12,5 +12,6 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *cameraModeButton;
 @property (weak, nonatomic) IBOutlet UIButton *beaconModeButton;
+@property (weak, nonatomic) IBOutlet UIButton *setupButton;
 
 @end

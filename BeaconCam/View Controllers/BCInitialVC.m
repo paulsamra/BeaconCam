@@ -7,8 +7,12 @@
 //
 
 #import "BCInitialVC.h"
+#import "BCStyleKit.h"
+#import "BCUserManager.h"
 
-@interface BCInitialVC ()
+@interface BCInitialVC()
+
+@property (nonatomic) BOOL shouldShowSignUp;
 
 @end
 
@@ -17,6 +21,23 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [self.setupButton setBackgroundImage:[BCStyleKit imageOfSettingsIconWithHighlighted:NO]  forState:UIControlStateNormal];
+    [self.setupButton setBackgroundImage:[BCStyleKit imageOfSettingsIconWithHighlighted:YES] forState:UIControlStateHighlighted];
+    
+    if( ![BCUserManager currentUserEmail] )
+    {
+        self.shouldShowSignUp = YES;
+    }
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    if( self.shouldShowSignUp )
+    {
+        [self performSegueWithIdentifier:@"userSetup" sender:nil];
+        self.shouldShowSignUp = NO;
+    }
 }
 
 - (IBAction)beaconModeSelected
@@ -27,6 +48,11 @@
 - (IBAction)cameraModeSelected
 {
     [self performSegueWithIdentifier:@"serverMode" sender:nil];
+}
+
+- (IBAction)goToSetup
+{
+    [self performSegueWithIdentifier:@"userSetup" sender:nil];
 }
 
 - (NSUInteger)supportedInterfaceOrientations

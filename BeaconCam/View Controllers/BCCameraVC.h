@@ -12,7 +12,7 @@
 
 @interface BCCameraVC : UIViewController
 
-@property (strong, nonatomic) AVCaptureVideoPreviewLayer *videoLayer;
-@property (strong, nonatomic) GPUImageVideoCamera *videoCamera;
+@property (strong, nonatomic) GPUImageStillCamera *camera;
+@property (weak, nonatomic) IBOutlet UIButton *exitButton;
 
 @end

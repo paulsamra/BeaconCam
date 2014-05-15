@@ -6,14 +6,15 @@
 //  Copyright (c) 2014 Swipe Development. All rights reserved.
 //
 
-#import "BCManager.h"
+#import "BCBluetoothManager.h"
+#import "BCUserManager.h"
 #import <CoreLocation/CoreLocation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
 static NSString *kBeaconID           = @"com.swipedevelopment.beaconCam";
 static NSString *kBeaconUUID         = @"4B5B9305-BA7F-4E69-B985-FB505253D81F";
 
-@interface BCManager() <CBPeripheralManagerDelegate, CLLocationManagerDelegate>
+@interface BCBluetoothManager() <CBPeripheralManagerDelegate, CLLocationManagerDelegate>
 
 @property (strong, nonatomic) CLLocationManager   *locationManager;
 @property (strong, nonatomic) CBPeripheralManager *peripheralManager;
@@ -24,16 +25,16 @@ static NSString *kBeaconUUID         = @"4B5B9305-BA7F-4E69-B985-FB505253D81F";
 
 @end
 
-@implementation BCManager
+@implementation BCBluetoothManager
 
-+ (BCManager *)sharedManager
++ (BCBluetoothManager *)sharedManager
 {
-    static BCManager *manager = nil;
+    static BCBluetoothManager *manager = nil;
     
     static dispatch_once_t singleton;
     
     dispatch_once(&singleton, ^{
-        manager = [[BCManager alloc] init];
+        manager = [[BCBluetoothManager alloc] init];
     });
     
     return manager;
@@ -49,6 +50,9 @@ static NSString *kBeaconUUID         = @"4B5B9305-BA7F-4E69-B985-FB505253D81F";
         _peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil];
         
         _locationManager.delegate = self;
+        
+        _shouldAlwaysTakePicture = [BCUserManager shouldAlwaysTakePicture];
+        _userInRange = NO;
     }
     
     return self;
@@ -101,24 +105,35 @@ static NSString *kBeaconUUID         = @"4B5B9305-BA7F-4E69-B985-FB505253D81F";
 {
     [self.locationManager requestStateForRegion:self.beaconRegion];
     [self.locationManager startRangingBeaconsInRegion:self.beaconRegion];
+    [self.locationManager startMonitoringForRegion:self.beaconRegion];
 }
 
 // Stop ranging for iBeacons.
 - (void)stopListeningForBeacons
 {
     [self.locationManager stopRangingBeaconsInRegion:self.beaconRegion];
+    [self.locationManager stopMonitoringForRegion:self.beaconRegion];
+}
+
+- (BOOL)isListeningForBeacons
+{
+    NSSet *rangedRegions = self.locationManager.rangedRegions;
+    
+    return [rangedRegions count] ? YES : NO;
 }
 
 // Entered iBeacon region.
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
     self.inBeaconRegion = YES;
+    [BCUserManager notifyBeaconWithStatus:YES];
     NSLog(@"Entered iBeacon region.");
 }
 
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
     self.inBeaconRegion = NO;
+    [BCUserManager notifyBeaconWithStatus:NO];
     NSLog(@"Exited iBeacon region.");
     [[NSNotificationCenter defaultCenter] postNotificationName:kExitedBeconRegion object:nil];
 }
@@ -137,10 +152,6 @@ static NSString *kBeaconUUID         = @"4B5B9305-BA7F-4E69-B985-FB505253D81F";
 // iBeacon has been ranged.
 - (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region
 {
-    CLBeacon *beacon = [beacons lastObject];
-    NSString *rssi = [NSString stringWithFormat:@"%ld", (long)beacon.rssi];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:kBeaconFound object:rssi];
     [self.locationManager requestStateForRegion:self.beaconRegion];
 }
 

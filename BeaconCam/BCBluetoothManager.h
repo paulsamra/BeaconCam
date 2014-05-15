@@ -11,14 +11,18 @@
 #define kBeaconFound       @"beacon_found"
 #define kExitedBeconRegion @"exited_beacon_region"
 
-@interface BCManager : NSObject
+@interface BCBluetoothManager : NSObject
 
-+ (BCManager *)sharedManager;
+@property (nonatomic) BOOL shouldAlwaysTakePicture;
+@property (nonatomic) BOOL userInRange;
+
++ (BCBluetoothManager *)sharedManager;
 
 - (void)startBroadcasting;
 - (void)stopBroadcasting;
 
 - (void)startListeningForBeacons;
 - (void)stopListeningForBeacons;
+- (BOOL)isListeningForBeacons;
 
 @end

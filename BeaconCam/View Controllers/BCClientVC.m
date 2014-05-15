@@ -7,7 +7,7 @@
 //
 
 #import "BCClientVC.h"
-#import "BCManager.h"
+#import "BCBluetoothManager.h"
 
 @interface BCClientVC ()
 
@@ -21,7 +21,7 @@
     
     self.beaconLabel.text = @"No Beacon Found";
     
-    [[BCManager sharedManager] startListeningForBeacons];
+    [[BCBluetoothManager sharedManager] startListeningForBeacons];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(foundBeacon:) name:kBeaconFound object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(exitedRegion) name:kExitedBeconRegion object:nil];
@@ -35,7 +35,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [[BCManager sharedManager] stopListeningForBeacons];
+    [[BCBluetoothManager sharedManager] stopListeningForBeacons];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self];

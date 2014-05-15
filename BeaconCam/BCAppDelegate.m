@@ -8,7 +8,8 @@
 
 #import "BCAppDelegate.h"
 #import <Parse/Parse.h>
-#import "BCManager.h"
+#import "BCBluetoothManager.h"
+#import "BCUserManager.h"
 
 @implementation BCAppDelegate
 
@@ -16,7 +17,7 @@
 {
     // Override point for customization after application launch.
     
-    [BCManager sharedManager];
+    [BCBluetoothManager sharedManager];
     
     NSDictionary *attributes = @{ NSFontAttributeName : [UIFont fontWithName:@"Avenir-Light" size:20] };
     [[UINavigationBar appearance] setTitleTextAttributes:attributes];
@@ -68,7 +69,8 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
-    [PFPush handlePush:userInfo];
+    NSLog(@"RECEIVED NOTIFICATION: %@", userInfo);
+    [BCUserManager handlePush:userInfo];
 }
 
 @end
