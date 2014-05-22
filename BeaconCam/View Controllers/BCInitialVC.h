@@ -11,7 +11,9 @@
 @interface BCInitialVC : UIViewController
 
 @property (weak, nonatomic) IBOutlet UIButton *cameraModeButton;
-@property (weak, nonatomic) IBOutlet UIButton *beaconModeButton;
+@property (weak, nonatomic) IBOutlet UIButton *enableBeaconSearchButton;
 @property (weak, nonatomic) IBOutlet UIButton *setupButton;
+@property (weak, nonatomic) IBOutlet UIButton *viewPhotosButton;
+@property (weak, nonatomic) IBOutlet UILabel *beaconStatusLabel;
 
 @end

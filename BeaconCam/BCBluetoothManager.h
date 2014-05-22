@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#define kBeaconFound       @"beacon_found"
-#define kExitedBeconRegion @"exited_beacon_region"
+#define kBeaconFound        @"beacon_found"
+#define kExitedBeconRegion  @"exited_beacon_region"
 
 @interface BCBluetoothManager : NSObject
 

@@ -20,6 +20,7 @@ static NSString *kBeaconUUID         = @"4B5B9305-BA7F-4E69-B985-FB505253D81F";
 @property (strong, nonatomic) CBPeripheralManager *peripheralManager;
 @property (strong, nonatomic) CLBeaconRegion      *beaconRegion;
 
+@property (nonatomic) BOOL initialRegionCheck;
 @property (nonatomic) BOOL inBeaconRegion;
 @property (nonatomic) BOOL isListeningForBeacons;
 
@@ -53,6 +54,7 @@ static NSString *kBeaconUUID         = @"4B5B9305-BA7F-4E69-B985-FB505253D81F";
         
         _shouldAlwaysTakePicture = [BCUserManager shouldAlwaysTakePicture];
         _userInRange = NO;
+        _initialRegionCheck = YES;
     }
     
     return self;
@@ -103,21 +105,21 @@ static NSString *kBeaconUUID         = @"4B5B9305-BA7F-4E69-B985-FB505253D81F";
 // Start ranging for iBeacons.
 - (void)startListeningForBeacons
 {
-    [self.locationManager requestStateForRegion:self.beaconRegion];
-    [self.locationManager startRangingBeaconsInRegion:self.beaconRegion];
     [self.locationManager startMonitoringForRegion:self.beaconRegion];
+    [self.locationManager requestStateForRegion:self.beaconRegion];
+    //[self.locationManager startRangingBeaconsInRegion:self.beaconRegion];
 }
 
 // Stop ranging for iBeacons.
 - (void)stopListeningForBeacons
 {
-    [self.locationManager stopRangingBeaconsInRegion:self.beaconRegion];
+    //[self.locationManager stopRangingBeaconsInRegion:self.beaconRegion];
     [self.locationManager stopMonitoringForRegion:self.beaconRegion];
 }
 
 - (BOOL)isListeningForBeacons
 {
-    NSSet *rangedRegions = self.locationManager.rangedRegions;
+    NSSet *rangedRegions = self.locationManager.monitoredRegions;
     
     return [rangedRegions count] ? YES : NO;
 }

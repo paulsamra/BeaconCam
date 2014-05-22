@@ -13,11 +13,15 @@
 + (NSString *)currentUserEmail;
 + (void)setUserEmail:(NSString *)email;
 
++ (void)determineUserRegionStatus;
+
 + (void)notifyBeaconWithStatus:(BOOL)inside;
 
 + (void)setShouldAlwaysTakePictureSetting:(BOOL)setting;
 + (BOOL)shouldAlwaysTakePicture;
 
 + (void)handlePush:(NSDictionary *)info;
+
++ (void)uploadPhoto:(NSData *)imageData withStatus:(BOOL)friendly;
 
 @end

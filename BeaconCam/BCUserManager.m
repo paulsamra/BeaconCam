@@ -10,9 +10,13 @@
 #import "BCBluetoothManager.h"
 #import <Parse/Parse.h>
 
-#define kEmailKey @"email"
-#define kUserClassKey @"User"
-#define kPictureSettingKey @"picture_setting"
+#define kEmailKey           @"email"
+#define kUserClass          @"User"
+#define kPictureSettingKey  @"picture_setting"
+#define kUserPhotoClass     @"UserPhoto"
+#define kPhotoFileName      @"image.jpg"
+#define kPhotoKey           @"photo"
+#define kInsideRegionKey    @"insideRegion"
 
 @implementation BCUserManager
 
@@ -25,7 +29,7 @@
 {
     if( ![BCUserManager currentUserEmail] )
     {
-        PFQuery *query = [PFQuery queryWithClassName:kUserClassKey];
+        PFQuery *query = [PFQuery queryWithClassName:kUserClass];
         [query whereKey:kEmailKey equalTo:email];
         [query findObjectsInBackgroundWithBlock:^( NSArray *objects, NSError *error )
         {
@@ -40,7 +44,7 @@
                 
                 if( [objects count] == 0 )
                 {
-                    PFObject *userIDObject = [PFObject objectWithClassName:kUserClassKey];
+                    PFObject *userIDObject = [PFObject objectWithClassName:kUserClass];
                     userIDObject[kEmailKey] = email;
                     [userIDObject saveInBackground];
                     
@@ -60,7 +64,7 @@
     
     else
     {
-        PFQuery *query = [PFQuery queryWithClassName:kUserClassKey];
+        PFQuery *query = [PFQuery queryWithClassName:kUserClass];
         [query whereKey:kEmailKey equalTo:[BCUserManager currentUserEmail]];
         [query findObjectsInBackgroundWithBlock:^( NSArray *objects, NSError *error )
         {
@@ -72,7 +76,7 @@
             {
                 if( [objects count] == 0 )
                 {
-                    PFObject *userIDObject = [PFObject objectWithClassName:kUserClassKey];
+                    PFObject *userIDObject = [PFObject objectWithClassName:kUserClass];
                     userIDObject[kEmailKey] = email;
                     [userIDObject saveInBackground];
                     
@@ -90,13 +94,33 @@
     }
 }
 
++ (void)determineUserRegionStatus
+{
+    PFQuery *userQuery = [PFQuery queryWithClassName:kUserClass];
+    [userQuery whereKey:kEmailKey equalTo:[BCUserManager currentUserEmail]];
+    [userQuery findObjectsInBackgroundWithBlock:^( NSArray *objects, NSError *error )
+    {
+        if( error )
+        {
+            NSLog( @"%@", error.localizedDescription );
+        }
+        else
+        {
+            PFObject *userObject = [objects lastObject];
+            BOOL inRange = [userObject[kInsideRegionKey] boolValue];
+            [[BCBluetoothManager sharedManager] setUserInRange:inRange];
+        }
+    }];
+}
+
 + (void)notifyBeaconWithStatus:(BOOL)inside
 {
-    PFQuery *userQuery = [PFQuery queryWithClassName:kUserClassKey];
+    PFQuery *userQuery = [PFQuery queryWithClassName:kUserClass];
     [userQuery whereKey:kEmailKey equalTo:[BCUserManager currentUserEmail]];
     
     PFQuery *installationQuery = [PFInstallation query];
     [installationQuery whereKey:@"user" matchesQuery:userQuery];
+    [installationQuery whereKey:@"installationId" notEqualTo:[[PFInstallation currentInstallation] installationId]];
     
     PFPush *push = [[PFPush alloc] init];
     [push setQuery:installationQuery];
@@ -105,6 +129,20 @@
     
     [push setMessage:message];
     [push sendPushInBackground];
+    
+    [userQuery findObjectsInBackgroundWithBlock:^( NSArray *objects, NSError *error )
+    {
+        if( error )
+        {
+            NSLog( @"%@", error.localizedDescription );
+        }
+        else
+        {
+            PFObject *userObject = [objects objectAtIndex:0];
+            userObject[kInsideRegionKey] = [NSNumber numberWithBool:inside];
+            [userObject saveInBackground];
+        }
+    }];
 }
 
 + (BOOL)shouldAlwaysTakePicture
@@ -144,6 +182,16 @@
     {
         [[BCBluetoothManager sharedManager] setUserInRange:NO];
     }
+}
+
++ (void)uploadPhoto:(NSData *)imageData withStatus:(BOOL)friendly
+{
+    PFFile   *imageFile = [PFFile fileWithName:kPhotoFileName data:imageData];
+    PFObject *newUserPhoto = [PFObject objectWithClassName:kUserPhotoClass];
+    [newUserPhoto setObject:imageFile forKey:kPhotoKey];
+    
+    PFQuery *userQuery = [PFQuery queryWithClassName:kUserClass];
+    [userQuery whereKey:kEmailKey equalTo:[BCUserManager currentUserEmail]];
 }
 
 @end

@@ -9,6 +9,7 @@
 #import "BCInitialVC.h"
 #import "BCStyleKit.h"
 #import "BCUserManager.h"
+#import "BCBluetoothManager.h"
 
 @interface BCInitialVC()
 
@@ -22,13 +23,58 @@
 {
     [super viewDidLoad];
     
-    [self.setupButton setBackgroundImage:[BCStyleKit imageOfSettingsIconWithHighlighted:NO]  forState:UIControlStateNormal];
-    [self.setupButton setBackgroundImage:[BCStyleKit imageOfSettingsIconWithHighlighted:YES] forState:UIControlStateHighlighted];
-    
     if( ![BCUserManager currentUserEmail] )
     {
         self.shouldShowSignUp = YES;
     }
+    
+    [self setupButtons];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self updateBeaconStatusUI];
+}
+
+- (void)updateBeaconStatusUI
+{
+    if( [[BCBluetoothManager sharedManager] isListeningForBeacons] )
+    {
+        self.beaconStatusLabel.text = @"Beacons are being monitored.";
+        
+        UIImage *normalImage = [BCStyleKit imageOfGenericButtonWithText:@"Disable Beacon Search" highlighted:NO];
+        UIImage *highlightedImage = [BCStyleKit imageOfGenericButtonWithText:@"Disable Beacon Search" highlighted:YES];
+        [self.enableBeaconSearchButton setBackgroundImage:normalImage      forState:UIControlStateNormal];
+        [self.enableBeaconSearchButton setBackgroundImage:highlightedImage forState:UIControlStateHighlighted];
+    }
+    
+    else
+    {
+        self.beaconStatusLabel.text = @"Beacons are not being monitored.";
+        
+        UIImage *normalImage = [BCStyleKit imageOfGenericButtonWithText:@"Enable Beacon Search" highlighted:NO];
+        UIImage *highlightedImage = [BCStyleKit imageOfGenericButtonWithText:@"Enable Beacon Search" highlighted:YES];
+        [self.enableBeaconSearchButton setBackgroundImage:normalImage      forState:UIControlStateNormal];
+        [self.enableBeaconSearchButton setBackgroundImage:highlightedImage forState:UIControlStateHighlighted];
+    }
+}
+
+- (void)setupButtons
+{
+    UIImage *normalImage = [BCStyleKit imageOfSettingsIconWithHighlighted:NO];
+    UIImage *highlightedImage = [BCStyleKit imageOfSettingsIconWithHighlighted:YES];
+    [self.setupButton setBackgroundImage:normalImage      forState:UIControlStateNormal];
+    [self.setupButton setBackgroundImage:highlightedImage forState:UIControlStateHighlighted];
+    
+    normalImage = [BCStyleKit imageOfGenericButtonWithText:@"View Photos" highlighted:NO];
+    highlightedImage = [BCStyleKit imageOfGenericButtonWithText:@"View Photos" highlighted:YES];
+    [self.viewPhotosButton setBackgroundImage:normalImage      forState:UIControlStateNormal];
+    [self.viewPhotosButton setBackgroundImage:highlightedImage forState:UIControlStateHighlighted];
+    
+    normalImage = [BCStyleKit imageOfGenericButtonWithText:@"Camera Mode" highlighted:NO];
+    highlightedImage = [BCStyleKit imageOfGenericButtonWithText:@"Camera Mode" highlighted:YES];
+    [self.cameraModeButton setBackgroundImage:normalImage      forState:UIControlStateNormal];
+    [self.cameraModeButton setBackgroundImage:highlightedImage forState:UIControlStateHighlighted];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -40,9 +86,19 @@
     }
 }
 
-- (IBAction)beaconModeSelected
+- (IBAction)enableBeaconSearch
 {
-    [self performSegueWithIdentifier:@"clientMode" sender:nil];
+    if( ![[BCBluetoothManager sharedManager] isListeningForBeacons] )
+    {
+        [[BCBluetoothManager sharedManager] startListeningForBeacons];
+    }
+    
+    else
+    {
+        [[BCBluetoothManager sharedManager] stopListeningForBeacons];
+    }
+    
+    [self updateBeaconStatusUI];
 }
 
 - (IBAction)cameraModeSelected
@@ -53,6 +109,11 @@
 - (IBAction)goToSetup
 {
     [self performSegueWithIdentifier:@"userSetup" sender:nil];
+}
+
+- (IBAction)goToPhotos
+{
+    [self performSegueWithIdentifier:@"viewPhotos" sender:nil];
 }
 
 - (NSUInteger)supportedInterfaceOrientations

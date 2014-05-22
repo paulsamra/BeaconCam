@@ -8,8 +8,9 @@
 
 #import "BCCameraVC.h"
 #import "BCBluetoothManager.h"
+#import "BCStyleKit.h"
 
-@interface BCCameraVC()
+@interface BCCameraVC() <GPUImageVideoCameraDelegate>
 
 @property (strong, nonatomic) UIView                        *motionView;
 @property (strong, nonatomic) NSDate                        *lastTakenDate;
@@ -19,7 +20,7 @@
 @property (strong, nonatomic) GPUImageMotionDetector        *motionDetector;
 @property (strong, nonatomic) GPUImageBrightnessFilter      *brightnessFilter;
 
-@property (nonatomic) int  initializeCounter;
+@property (nonatomic) BOOL initialDetection;
 @property (nonatomic) BOOL motionDetected;
 
 @end
@@ -33,17 +34,33 @@
     
     [self setupCamera];
     
+    UIImage *normalImage = [BCStyleKit imageOfExitButtonWithHighlighted:NO];
+    UIImage *highlightedImage = [BCStyleKit imageOfExitButtonWithHighlighted:NO];
+    [self.exitButton setBackgroundImage:normalImage forState:UIControlStateNormal];
+    [self.exitButton setBackgroundImage:highlightedImage forState:UIControlStateHighlighted];
+    
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    
+    self.sensitivitySlider.value = 0.5;
     
     [[BCBluetoothManager sharedManager] startBroadcasting];
     
     self.exitButton.alpha = 0.5;
     
-    self.initializeCounter = 0;
+    self.initialDetection = YES;
     
     self.lastTakenDate = [NSDate date];
     
-    self.cameraTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(takePicture) userInfo:nil repeats:YES];
+    NSNumber *pictureInterval = [[NSUserDefaults standardUserDefaults] objectForKey:@"pictureInterval"];
+    
+    if( pictureInterval )
+    {
+        self.cameraTimer = [NSTimer scheduledTimerWithTimeInterval:[pictureInterval doubleValue] target:self selector:@selector(takePicture) userInfo:nil repeats:YES];
+    }
+    else
+    {
+        self.cameraTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(takePicture) userInfo:nil repeats:YES];
+    }
 }
 
 - (void)setupCamera
@@ -53,7 +70,7 @@
     self.camera.outputImageOrientation = UIInterfaceOrientationLandscapeLeft;
     
     self.motionDetector = [[GPUImageMotionDetector alloc] init];
-    [(GPUImageMotionDetector *)self.motionDetector setLowPassFilterStrength:0.5];
+    [self.motionDetector setLowPassFilterStrength:self.sensitivitySlider.value];
     [self.camera addTarget:self.motionDetector];
     
     self.brightnessFilter = [[GPUImageBrightnessFilter alloc] init];
@@ -65,6 +82,7 @@
     self.motionView.layer.borderWidth = 1;
     self.motionView.layer.borderColor = [[UIColor redColor] CGColor];
     [self.view addSubview:self.motionView];
+    [self.view addSubview:self.sensitivitySlider];
     self.motionView.hidden = YES;
     
     __unsafe_unretained BCCameraVC *weakSelf = self;
@@ -112,6 +130,8 @@
     BOOL shouldAlwaysTakePicture = [[BCBluetoothManager sharedManager] shouldAlwaysTakePicture];
     BOOL userInRange = [[BCBluetoothManager sharedManager] userInRange];
     
+    NSLog(@"%@", self.initialDetection ? @"YES" : @"NO");
+    
     if( self.motionDetected && ( shouldAlwaysTakePicture || userInRange ) )
     {
         self.motionDetected = NO;
@@ -126,7 +146,7 @@
 {
     UIImage *cameraImage = [self.brightnessFilter imageFromCurrentFramebufferWithOrientation:UIImageOrientationUp];
     
-    if( cameraImage )
+    if( cameraImage && !self.initialDetection )
     {
         dispatch_queue_t backgroundQueue = dispatch_queue_create("imageSaveThread", 0);
         
@@ -153,6 +173,15 @@
             NSLog(@"PICTURE TAKEN");
         });
     }
+    else
+    {
+        self.initialDetection = NO;
+    }
+}
+
+- (IBAction)changeMotionSensitivity:(UISlider *)sender
+{
+    [self.motionDetector setLowPassFilterStrength:self.sensitivitySlider.value];
 }
 
 - (NSUInteger)supportedInterfaceOrientations
