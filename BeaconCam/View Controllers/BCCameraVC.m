@@ -9,13 +9,18 @@
 #import "BCCameraVC.h"
 #import "BCBluetoothManager.h"
 #import "BCStyleKit.h"
+#import "BCUserManager.h"
 
 @interface BCCameraVC() <GPUImageVideoCameraDelegate>
 
 @property (strong, nonatomic) UIView                        *motionView;
 @property (strong, nonatomic) NSDate                        *lastTakenDate;
-@property (strong, nonatomic) NSTimer                       *cameraTimer;
+@property (strong, nonatomic) NSTimer                       *warmupTimer;
+@property (strong, nonatomic) NSTimer                       *intervalTimer;
+@property (strong, nonatomic) NSTimer                       *motionTimer;
+@property (strong, nonatomic) NSTimer                       *deadTimer;
 @property (strong, nonatomic) CIDetector                    *faceDetector;
+@property (strong, nonatomic) NSMutableArray                *availablePhotos;
 @property (strong, nonatomic) AVCaptureSession              *captureSession;
 @property (strong, nonatomic) GPUImageMotionDetector        *motionDetector;
 @property (strong, nonatomic) GPUImageBrightnessFilter      *brightnessFilter;
@@ -49,18 +54,22 @@
     
     self.initialDetection = YES;
     
-    self.lastTakenDate = [NSDate date];
+    self.lastTakenDate = nil;
+    
+    self.availablePhotos = [[NSMutableArray alloc] init];
     
     NSNumber *pictureInterval = [[NSUserDefaults standardUserDefaults] objectForKey:@"pictureInterval"];
     
     if( pictureInterval )
     {
-        self.cameraTimer = [NSTimer scheduledTimerWithTimeInterval:[pictureInterval doubleValue] target:self selector:@selector(takePicture) userInfo:nil repeats:YES];
+        self.intervalTimer = [NSTimer scheduledTimerWithTimeInterval:[pictureInterval doubleValue] target:self selector:@selector(takePicture) userInfo:nil repeats:YES];
     }
     else
     {
-        self.cameraTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(takePicture) userInfo:nil repeats:YES];
+        self.intervalTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(takePicture) userInfo:nil repeats:YES];
     }
+    
+    [BCUserManager deviceDidBecomeBeacon:YES];
 }
 
 - (void)setupCamera
@@ -85,6 +94,8 @@
     [self.view addSubview:self.sensitivitySlider];
     self.motionView.hidden = YES;
     
+    self.warmupTimer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(endWarmup) userInfo:nil repeats:NO];
+    
     __unsafe_unretained BCCameraVC *weakSelf = self;
     [(GPUImageMotionDetector *)self.motionDetector setMotionDetectionBlock:
     ^(CGPoint motionCentroid, CGFloat motionIntensity, CMTime frameTime)
@@ -94,6 +105,7 @@
             CGFloat motionBoxWidth = 1500.0 * motionIntensity;
             CGSize viewBounds = weakSelf.view.bounds.size;
             weakSelf.motionDetected = YES;
+            
             dispatch_async(dispatch_get_main_queue(), ^
             {
                 weakSelf->_motionView.frame = CGRectMake(round(viewBounds.width * motionCentroid.x - motionBoxWidth / 2.0), round(viewBounds.height * motionCentroid.y - motionBoxWidth / 2.0), motionBoxWidth, motionBoxWidth);
@@ -115,6 +127,11 @@
     [self.camera startCameraCapture];
 }
 
+- (void)endWarmup
+{
+    [self.warmupTimer invalidate];
+}
+
 - (IBAction)exitView
 {
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -125,20 +142,47 @@
     return YES;
 }
 
+- (void)startDeadTimer
+{
+    [self.motionTimer invalidate];
+    
+    self.deadTimer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(stopDeadTimer) userInfo:nil repeats:NO];
+    
+    NSLog(@"Sending photos!");
+    [self sendAvailablePhotos];
+}
+
+- (void)stopDeadTimer
+{
+    [self.deadTimer invalidate];
+}
+
 - (void)takePicture
 {
     BOOL shouldAlwaysTakePicture = [[BCBluetoothManager sharedManager] shouldAlwaysTakePicture];
     BOOL userInRange = [[BCBluetoothManager sharedManager] userInRange];
     
-    NSLog(@"%@", self.initialDetection ? @"YES" : @"NO");
-    
-    if( self.motionDetected && ( shouldAlwaysTakePicture || userInRange ) )
+    if( self.motionDetected && ( shouldAlwaysTakePicture || !userInRange ) && ![self.warmupTimer isValid] )
+    {
+        if( ![self.deadTimer isValid] )
+        {
+            if( ![self.motionTimer isValid] )
+            {
+                self.motionTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(startDeadTimer) userInfo:nil repeats:NO];
+            }
+            
+            NSLog(@"WILL TAKE PICTURE");
+            
+            self.motionDetected = NO;
+            
+            [self.brightnessFilter useNextFrameForImageCapture];
+            
+            [self performSelector:@selector(saveImage) withObject:nil afterDelay:0.1];
+        }
+    }
+    else
     {
         self.motionDetected = NO;
-        
-        [self.brightnessFilter useNextFrameForImageCapture];
-        
-        [self performSelector:@selector(saveImage) withObject:nil afterDelay:0.1];
     }
 }
 
@@ -162,13 +206,14 @@
             NSString *filePathToWrite = [documentsDirectory stringByAppendingPathComponent:fileName];
             
             [pictureData writeToFile:filePathToWrite options:NSAtomicWrite error:&error];
-            
+
             if( error )
             {
                 NSLog(@"%@", error.localizedDescription );
                 return;
             }
             
+            [self.availablePhotos addObject:filePathToWrite];
             self.lastTakenDate = [NSDate date];
             NSLog(@"PICTURE TAKEN");
         });
@@ -177,6 +222,14 @@
     {
         self.initialDetection = NO;
     }
+}
+
+- (void)sendAvailablePhotos
+{
+    BOOL shouldAlwaysTakePicture = [[BCBluetoothManager sharedManager] shouldAlwaysTakePicture];
+    BOOL userInRange = [[BCBluetoothManager sharedManager] userInRange];
+    
+    [BCUserManager sendPhotos:[self.availablePhotos copy] withStatus:( shouldAlwaysTakePicture || userInRange )];
 }
 
 - (IBAction)changeMotionSensitivity:(UISlider *)sender
@@ -203,7 +256,9 @@
 {
     [[BCBluetoothManager sharedManager] stopBroadcasting];
     [self.camera stopCameraCapture];
-    [self.cameraTimer invalidate];
+    [self.intervalTimer invalidate];
+    [BCUserManager deviceDidBecomeBeacon:NO];
+
 }
 
 @end

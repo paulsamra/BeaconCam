@@ -38,9 +38,9 @@
 		9468A9A71922086700B1F3C5 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9468A9A61922086700B1F3C5 /* OpenGLES.framework */; };
 		9468A9AC1922163300B1F3C5 /* FBMissingSymbols.m in Sources */ = {isa = PBXBuildFile; fileRef = 9468A9AB1922163300B1F3C5 /* FBMissingSymbols.m */; };
 		9468A9AF192219D900B1F3C5 /* UINavigationController+Orientation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9468A9AE192219D900B1F3C5 /* UINavigationController+Orientation.m */; };
+		949A180B192F557D0060A30B /* BCPhotosManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 949A180A192F557D0060A30B /* BCPhotosManager.m */; };
 		94EFC823192DD80C007B6140 /* BCPhotosVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 94EFC822192DD80C007B6140 /* BCPhotosVC.m */; };
 		94F7CFCC191DD926008E783D /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94F7CFCB191DD926008E783D /* AVFoundation.framework */; };
-		94F7CFCF191DF3BB008E783D /* BCClientVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 94F7CFCE191DF3BB008E783D /* BCClientVC.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -250,11 +250,11 @@
 		9468A9AB1922163300B1F3C5 /* FBMissingSymbols.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBMissingSymbols.m; sourceTree = "<group>"; };
 		9468A9AD192219D900B1F3C5 /* UINavigationController+Orientation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+Orientation.h"; sourceTree = "<group>"; };
 		9468A9AE192219D900B1F3C5 /* UINavigationController+Orientation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+Orientation.m"; sourceTree = "<group>"; };
+		949A1809192F557D0060A30B /* BCPhotosManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCPhotosManager.h; sourceTree = "<group>"; };
+		949A180A192F557D0060A30B /* BCPhotosManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCPhotosManager.m; sourceTree = "<group>"; };
 		94EFC821192DD80C007B6140 /* BCPhotosVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCPhotosVC.h; sourceTree = "<group>"; };
 		94EFC822192DD80C007B6140 /* BCPhotosVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCPhotosVC.m; sourceTree = "<group>"; };
 		94F7CFCB191DD926008E783D /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		94F7CFCD191DF3BB008E783D /* BCClientVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BCClientVC.h; sourceTree = "<group>"; };
-		94F7CFCE191DF3BB008E783D /* BCClientVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BCClientVC.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -339,6 +339,8 @@
 				9418B831191CE046000D67D6 /* BCBluetoothManager.m */,
 				9436724219232DD6007CFF4B /* BCUserManager.h */,
 				9436724319232DD6007CFF4B /* BCUserManager.m */,
+				949A1809192F557D0060A30B /* BCPhotosManager.h */,
+				949A180A192F557D0060A30B /* BCPhotosManager.m */,
 				9418B823191CCC8B000D67D6 /* BCStyleKit.h */,
 				9418B824191CCC8B000D67D6 /* BCStyleKit.m */,
 				9468A9AD192219D900B1F3C5 /* UINavigationController+Orientation.h */,
@@ -371,8 +373,6 @@
 				9418B7FD191CB8F1000D67D6 /* BCInitialVC.m */,
 				9418B82D191CD267000D67D6 /* BCCameraVC.h */,
 				9418B82E191CD267000D67D6 /* BCCameraVC.m */,
-				94F7CFCD191DF3BB008E783D /* BCClientVC.h */,
-				94F7CFCE191DF3BB008E783D /* BCClientVC.m */,
 				9436723F192327C3007CFF4B /* BCSetupVC.h */,
 				94367240192327C3007CFF4B /* BCSetupVC.m */,
 				94EFC821192DD80C007B6140 /* BCPhotosVC.h */,
@@ -640,6 +640,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9418B7FE191CB8F1000D67D6 /* BCInitialVC.m in Sources */,
+				949A180B192F557D0060A30B /* BCPhotosManager.m in Sources */,
 				9418B7F4191CB8F1000D67D6 /* main.m in Sources */,
 				9436724419232DD6007CFF4B /* BCUserManager.m in Sources */,
 				9468A9AC1922163300B1F3C5 /* FBMissingSymbols.m in Sources */,
@@ -647,7 +648,6 @@
 				9468A9AF192219D900B1F3C5 /* UINavigationController+Orientation.m in Sources */,
 				9418B82F191CD267000D67D6 /* BCCameraVC.m in Sources */,
 				9418B825191CCC8B000D67D6 /* BCStyleKit.m in Sources */,
-				94F7CFCF191DF3BB008E783D /* BCClientVC.m in Sources */,
 				9418B7F8191CB8F1000D67D6 /* BCAppDelegate.m in Sources */,
 				94EFC823192DD80C007B6140 /* BCPhotosVC.m in Sources */,
 				94367241192327C3007CFF4B /* BCSetupVC.m in Sources */,

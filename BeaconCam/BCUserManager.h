@@ -15,6 +15,7 @@
 
 + (void)determineUserRegionStatus;
 
++ (void)deviceDidBecomeBeacon:(BOOL)isBeacon;
 + (void)notifyBeaconWithStatus:(BOOL)inside;
 
 + (void)setShouldAlwaysTakePictureSetting:(BOOL)setting;
@@ -22,6 +23,7 @@
 
 + (void)handlePush:(NSDictionary *)info;
 
-+ (void)uploadPhoto:(NSData *)imageData withStatus:(BOOL)friendly;
++ (void)sendPhotos:(NSArray *)photos withStatus:(BOOL)friendly;
++ (void)getAvailablePhotos;
 
 @end

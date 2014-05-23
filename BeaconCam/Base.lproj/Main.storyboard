@@ -248,10 +248,10 @@
             </objects>
             <point key="canvasLocation" x="1222" y="104"/>
         </scene>
-        <!--Collection View Controller - Photos-->
+        <!--PhotosVC - Photos-->
         <scene sceneID="89q-Ze-Eug">
             <objects>
-                <collectionViewController autoresizesArchivedViewToFullSize="NO" id="WvB-Ie-hcR" sceneMemberID="viewController">
+                <collectionViewController autoresizesArchivedViewToFullSize="NO" id="WvB-Ie-hcR" customClass="BCPhotosVC" sceneMemberID="viewController">
                     <collectionView key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="Cwp-Mf-qNy">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

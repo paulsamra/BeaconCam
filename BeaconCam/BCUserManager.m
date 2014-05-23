@@ -16,6 +16,7 @@
 #define kUserPhotoClass     @"UserPhoto"
 #define kPhotoFileName      @"image.jpg"
 #define kPhotoKey           @"photo"
+#define kPhotoSetClass      @"UserPhotoSet"
 #define kInsideRegionKey    @"insideRegion"
 
 @implementation BCUserManager
@@ -96,21 +97,35 @@
 
 + (void)determineUserRegionStatus
 {
-    PFQuery *userQuery = [PFQuery queryWithClassName:kUserClass];
-    [userQuery whereKey:kEmailKey equalTo:[BCUserManager currentUserEmail]];
-    [userQuery findObjectsInBackgroundWithBlock:^( NSArray *objects, NSError *error )
+    NSString *currentUserEmail = [BCUserManager currentUserEmail];
+    
+    if( currentUserEmail )
     {
-        if( error )
-        {
-            NSLog( @"%@", error.localizedDescription );
-        }
-        else
-        {
-            PFObject *userObject = [objects lastObject];
-            BOOL inRange = [userObject[kInsideRegionKey] boolValue];
-            [[BCBluetoothManager sharedManager] setUserInRange:inRange];
-        }
-    }];
+        PFQuery *userQuery = [PFQuery queryWithClassName:kUserClass];
+        [userQuery whereKey:kEmailKey equalTo:[BCUserManager currentUserEmail]];
+        [userQuery findObjectsInBackgroundWithBlock:^( NSArray *objects, NSError *error )
+         {
+             if( error )
+             {
+                 NSLog( @"%@", error.localizedDescription );
+             }
+             else
+             {
+                 PFObject *userObject = [objects lastObject];
+                 BOOL inRange = [userObject[kInsideRegionKey] boolValue];
+                 [[BCBluetoothManager sharedManager] setUserInRange:inRange];
+             }
+         }];
+    }
+}
+
++ (void)deviceDidBecomeBeacon:(BOOL)isBeacon
+{
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    
+    [currentInstallation setObject:[NSNumber numberWithBool:isBeacon] forKey:@"isBeacon"];
+    
+    [currentInstallation saveInBackground];
 }
 
 + (void)notifyBeaconWithStatus:(BOOL)inside
@@ -120,7 +135,7 @@
     
     PFQuery *installationQuery = [PFInstallation query];
     [installationQuery whereKey:@"user" matchesQuery:userQuery];
-    [installationQuery whereKey:@"installationId" notEqualTo:[[PFInstallation currentInstallation] installationId]];
+    [installationQuery whereKey:@"isBeacon" equalTo:[NSNumber numberWithBool:YES]];
     
     PFPush *push = [[PFPush alloc] init];
     [push setQuery:installationQuery];
@@ -184,14 +199,92 @@
     }
 }
 
-+ (void)uploadPhoto:(NSData *)imageData withStatus:(BOOL)friendly
++ (void)sendPhotos:(NSArray *)photos withStatus:(BOOL)friendly
 {
-    PFFile   *imageFile = [PFFile fileWithName:kPhotoFileName data:imageData];
-    PFObject *newUserPhoto = [PFObject objectWithClassName:kUserPhotoClass];
-    [newUserPhoto setObject:imageFile forKey:kPhotoKey];
+    NSMutableArray *photoObjects = [[NSMutableArray alloc] init];
+    
+    int imageCount = 1;
+    for( NSString *photoPath in photos )
+    {
+        NSString *fileName = [NSString stringWithFormat:@"%d.jpg", imageCount];
+        PFFile *imageFile = [PFFile fileWithName:fileName contentsAtPath:photoPath];
+        
+        PFObject *userPhoto = [PFObject objectWithClassName:kUserPhotoClass];
+        [userPhoto setObject:imageFile forKey:kPhotoKey];
+        
+        [photoObjects addObject:userPhoto];
+        imageCount++;
+    }
     
     PFQuery *userQuery = [PFQuery queryWithClassName:kUserClass];
     [userQuery whereKey:kEmailKey equalTo:[BCUserManager currentUserEmail]];
+    
+    [userQuery findObjectsInBackgroundWithBlock:^( NSArray *objects, NSError *error )
+    {
+        PFObject *userObject = [objects lastObject];
+        
+        PFObject *newPhotoSet = [PFObject objectWithClassName:kPhotoSetClass];
+        [newPhotoSet setObject:[photoObjects copy] forKey:@"photos"];
+        
+        [newPhotoSet setObject:[NSNumber numberWithBool:friendly] forKey:@"friendly"];
+        
+        [newPhotoSet setObject:userObject forKey:@"user"];
+        
+        [newPhotoSet saveInBackgroundWithBlock:^( BOOL succeeded, NSError *error )
+        {
+            if( error )
+            {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            if( !succeeded )
+            {
+                NSLog(@"UPLOADING PHOTOS FAILED");
+            }
+            else
+            {
+                for( NSString *filePath in photos )
+                {
+                    [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+                }
+            }
+        }];
+    }];
+    
+    PFQuery *installationQuery = [PFInstallation query];
+    [installationQuery whereKey:@"user" matchesQuery:userQuery];
+    [installationQuery whereKey:@"isBeacon" equalTo:[NSNumber numberWithBool:NO]];
+    
+    PFPush *push = [[PFPush alloc] init];
+    [push setQuery:installationQuery];
+    
+    NSString *message = nil;
+    
+    if( friendly )
+    {
+        message = @"Friendly Alert! Motion has been detected!";
+    }
+    else
+    {
+        message = @"Intruder Alert! Motion has been detected!";
+    }
+    
+    [push setMessage:message];
+    [push sendPushInBackground];
+}
+
++ (void)getAvailablePhotos
+{
+    PFQuery *userQuery = [PFQuery queryWithClassName:kUserClass];
+    [userQuery whereKey:kEmailKey equalTo:[BCUserManager currentUserEmail]];
+    
+    PFQuery *photoSetsQuery = [PFQuery queryWithClassName:kPhotoSetClass];
+    [photoSetsQuery whereKey:@"user" matchesQuery:userQuery];
+    
+    [photoSetsQuery findObjectsInBackgroundWithBlock:^( NSArray *objects, NSError *error )
+    {
+        NSLog(@"%@", objects);
+        
+    }];
 }
 
 @end
