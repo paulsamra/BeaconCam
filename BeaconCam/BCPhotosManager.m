@@ -7,22 +7,76 @@
 //
 
 #import "BCPhotosManager.h"
+#import <Parse/Parse.h>
+
+#define kSavedPhotoSets @"savedPhotoSets"
+#define kPhotoClass     @"UserPhoto"
+#define kObjectIDKey    @"objectId"
 
 @implementation BCPhotosManager
 
-+ (BCPhotosManager *)sharedManager
++ (void)savePhotoSetWithID:(NSString *)objectID date:(NSDate *)date photoIDs:(NSArray *)photoIDs friendly:(BOOL)friendly
 {
-    static BCPhotosManager *manager = nil;
+    NSMutableArray *savedPhotoSets = [[self savedPhotoSets] mutableCopy];
     
-    static dispatch_once_t singleton;
+    if( !savedPhotoSets )
+    {
+        savedPhotoSets = [[NSMutableArray alloc] init];
+    }
     
-    dispatch_once(&singleton, ^{
-        manager = [[BCPhotosManager alloc] init];
-    });
+    NSNumber *friend = [NSNumber numberWithBool:friendly];
     
-    return manager;
+    NSDictionary *newPhotoSet = @{ kPhotoSetID : objectID, kPhotoSetDate : date, kFriendlyKey : friend, kPhotoIDs : photoIDs };
+    
+    if( [savedPhotoSets containsObject:newPhotoSet] )
+    {
+        return;
+    }
+    
+    [savedPhotoSets insertObject:newPhotoSet atIndex:0];
+    
+    [[NSUserDefaults standardUserDefaults] setObject:savedPhotoSets forKey:kSavedPhotoSets];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
++ (NSArray *)savedPhotoSets
+{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kSavedPhotoSets];
+}
 
++ (void)getImageForPhotoID:(NSString *)photoID withBlock:(void (^)(UIImage *, NSError *))completion
+{
+    PFQuery *photoQuery = [PFQuery queryWithClassName:kPhotoClass];
+    [photoQuery whereKey:kObjectIDKey equalTo:photoID];
+    
+    [photoQuery findObjectsInBackgroundWithBlock:^( NSArray *objects, NSError *error )
+    {
+        if( error )
+        {
+            completion( nil, error );
+        }
+        else
+        {
+            PFObject *userPhoto = [objects lastObject];
+            PFFile *photoFile = userPhoto[@"photo"];
+            
+            //NSLog(@"%@", photoFile.isDataAvailable ? @"YES" : @"NO");
+            
+            [photoFile getDataInBackgroundWithBlock:^( NSData *data, NSError *error )
+            {
+                if( error )
+                {
+                    completion( nil, error );
+                }
+                else
+                {
+                    UIImage *image = [UIImage imageWithData:data];
+                    
+                    completion( image, nil );
+                }
+            }];
+        }
+    }];
+}
 
 @end

@@ -8,16 +8,22 @@
 
 #import "BCUserManager.h"
 #import "BCBluetoothManager.h"
+#import "BCPhotosManager.h"
+#import "BCAppDelegate.h"
 #import <Parse/Parse.h>
 
 #define kEmailKey           @"email"
 #define kUserClass          @"User"
 #define kPictureSettingKey  @"picture_setting"
 #define kUserPhotoClass     @"UserPhoto"
-#define kPhotoFileName      @"image.jpg"
 #define kPhotoKey           @"photo"
+#define kPhotosArrayKey     @"photos"
 #define kPhotoSetClass      @"UserPhotoSet"
 #define kInsideRegionKey    @"insideRegion"
+#define kObjectIDKey        @"objectId"
+#define kCreatedAtKey       @"createdAt"
+#define kIntruderMessage    @"Intruder Alert! Motion has been detected!"
+#define kFriendlyMessage    @"Friendly Alert! Motion has been detected!"
 
 @implementation BCUserManager
 
@@ -184,18 +190,23 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-+ (void)handlePush:(NSDictionary *)info
++ (void)handlePush:(NSString *)message
 {
-    NSString *message = info[@"aps"][@"alert"];
-    
     if( [message isEqualToString:kBeaconFound] )
     {
         [[BCBluetoothManager sharedManager] setUserInRange:YES];
     }
     
-    if( [message isEqualToString:kExitedBeconRegion] )
+    else if( [message isEqualToString:kExitedBeconRegion] )
     {
         [[BCBluetoothManager sharedManager] setUserInRange:NO];
+    }
+    
+    else if( [message isEqualToString:kFriendlyMessage] || [message isEqualToString:kIntruderMessage] )
+    {
+        BCAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+        [appDelegate setShouldGoToPhotos:YES];
+        [appDelegate setNeedsPhotoUpdate:YES];
     }
 }
 
@@ -279,11 +290,28 @@
     
     PFQuery *photoSetsQuery = [PFQuery queryWithClassName:kPhotoSetClass];
     [photoSetsQuery whereKey:@"user" matchesQuery:userQuery];
+    [photoSetsQuery orderByAscending:kCreatedAtKey];
     
     [photoSetsQuery findObjectsInBackgroundWithBlock:^( NSArray *objects, NSError *error )
     {
-        NSLog(@"%@", objects);
-        
+        for( PFObject *photoSet in objects )
+        {
+            NSString *photoSetID  = photoSet.objectId;
+            NSArray  *photosArray = photoSet[kPhotosArrayKey];
+            NSNumber *friendly    = photoSet[kFriendlyKey];
+            NSDate   *createdAt   = photoSet.createdAt;
+            
+            NSMutableArray *photoIDs = [[NSMutableArray alloc] init];
+            
+            for( PFObject *photo in photosArray )
+            {
+                [photoIDs addObject:photo.objectId];
+            }
+            
+            [BCPhotosManager savePhotoSetWithID:photoSetID date:createdAt photoIDs:photoIDs friendly:[friendly boolValue]];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:kPhotosLoaded object:nil];
+        }
     }];
 }
 

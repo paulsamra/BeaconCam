@@ -12,4 +12,7 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
+@property (nonatomic) BOOL needsPhotoUpdate;
+@property (nonatomic) BOOL shouldGoToPhotos;
+
 @end

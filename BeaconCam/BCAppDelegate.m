@@ -35,6 +35,14 @@
     
     [BCUserManager determineUserRegionStatus];
     [BCUserManager deviceDidBecomeBeacon:NO];
+    [BCUserManager getAvailablePhotos];
+    
+    NSDictionary *userInfo = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+
+    if( userInfo[@"aps"][@"alert"] )
+    {
+        [BCUserManager handlePush:userInfo[@"aps"][@"alert"]];
+    }
     
     return YES;
 }
@@ -58,6 +66,21 @@
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    
+    if( self.shouldGoToPhotos )
+    {
+        UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        
+        UINavigationController *initialVC = [mainStoryboard instantiateInitialViewController];
+        
+        UIViewController *photosVC = [mainStoryboard instantiateViewControllerWithIdentifier:@"photosVC"];
+        
+        [initialVC pushViewController:photosVC animated:NO];
+        
+        self.window.rootViewController = initialVC;
+        
+        self.shouldGoToPhotos = NO;
+    }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -74,7 +97,6 @@
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-    NSLog(@"did register");
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation setDeviceTokenFromData:deviceToken];
     [currentInstallation saveInBackground];
@@ -83,7 +105,7 @@
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
     NSLog(@"RECEIVED NOTIFICATION: %@", userInfo);
-    [BCUserManager handlePush:userInfo];
+    [BCUserManager handlePush:userInfo[@"aps"][@"alert"]];
 }
 
 @end

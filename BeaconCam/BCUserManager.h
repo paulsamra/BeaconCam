@@ -21,7 +21,7 @@
 + (void)setShouldAlwaysTakePictureSetting:(BOOL)setting;
 + (BOOL)shouldAlwaysTakePicture;
 
-+ (void)handlePush:(NSDictionary *)info;
++ (void)handlePush:(NSString *)message;
 
 + (void)sendPhotos:(NSArray *)photos withStatus:(BOOL)friendly;
 + (void)getAvailablePhotos;
