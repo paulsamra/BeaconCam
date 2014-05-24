@@ -60,8 +60,6 @@
             PFObject *userPhoto = [objects lastObject];
             PFFile *photoFile = userPhoto[@"photo"];
             
-            //NSLog(@"%@", photoFile.isDataAvailable ? @"YES" : @"NO");
-            
             [photoFile getDataInBackgroundWithBlock:^( NSData *data, NSError *error )
             {
                 if( error )
@@ -77,6 +75,11 @@
             }];
         }
     }];
+}
+
++ (void)deleteSavedPhotos
+{
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kSavedPhotoSets];
 }
 
 @end

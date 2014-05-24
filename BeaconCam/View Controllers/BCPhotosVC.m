@@ -24,8 +24,6 @@
 {
     [super viewDidLoad];
     
-    [BCUserManager getAvailablePhotos];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadPhotos) name:kPhotosLoaded object:nil];
 }
 
@@ -40,6 +38,8 @@
     
     if( appDelegate.needsPhotoUpdate )
     {
+        NSLog(@"needs photo update");
+        
         [self.collectionView reloadData];
         
         appDelegate.needsPhotoUpdate = NO;

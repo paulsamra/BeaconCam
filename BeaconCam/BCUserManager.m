@@ -34,8 +34,16 @@
 
 + (void)setUserEmail:(NSString *)email
 {
+    if( [[BCUserManager currentUserEmail] isEqualToString:email] )
+    {
+        return;
+    }
+    
     if( ![BCUserManager currentUserEmail] )
     {
+        [[NSUserDefaults standardUserDefaults] setObject:email forKey:kEmailKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
         PFQuery *query = [PFQuery queryWithClassName:kUserClass];
         [query whereKey:kEmailKey equalTo:email];
         [query findObjectsInBackgroundWithBlock:^( NSArray *objects, NSError *error )
@@ -46,9 +54,6 @@
             }
             else
             {
-                [[NSUserDefaults standardUserDefaults] setObject:email forKey:kEmailKey];
-                [[NSUserDefaults standardUserDefaults] synchronize];
-                
                 if( [objects count] == 0 )
                 {
                     PFObject *userIDObject = [PFObject objectWithClassName:kUserClass];
@@ -71,6 +76,9 @@
     
     else
     {
+        [[NSUserDefaults standardUserDefaults] setObject:email forKey:kEmailKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
         PFQuery *query = [PFQuery queryWithClassName:kUserClass];
         [query whereKey:kEmailKey equalTo:[BCUserManager currentUserEmail]];
         [query findObjectsInBackgroundWithBlock:^( NSArray *objects, NSError *error )
@@ -89,12 +97,31 @@
                     
                     [[PFInstallation currentInstallation] setObject:userIDObject forKey:@"user"];
                     [[PFInstallation currentInstallation] saveInBackground];
+                    
+                    BCAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+                    [appDelegate setNeedsPhotoUpdate:YES];
+                    
+                    [BCPhotosManager deleteSavedPhotos];
+                    [BCUserManager getAvailablePhotos];
+                    
+                    NSLog(@"set needs photo update");
                 }
                 else
                 {
                     PFObject *userObject = [objects lastObject];
                     userObject[kEmailKey] = email;
                     [userObject saveInBackground];
+                    
+                    [[PFInstallation currentInstallation] setObject:userObject forKey:@"user"];
+                    [[PFInstallation currentInstallation] saveInBackground];
+                    
+                    BCAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+                    [appDelegate setNeedsPhotoUpdate:YES];
+                    
+                    [BCPhotosManager deleteSavedPhotos];
+                    [BCUserManager getAvailablePhotos];
+                    
+                    NSLog(@"set needs photo update");
                 }
             }
         }];
