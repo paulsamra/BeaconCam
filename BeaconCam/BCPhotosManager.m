@@ -15,7 +15,7 @@
 
 @implementation BCPhotosManager
 
-+ (void)savePhotoSetWithID:(NSString *)objectID date:(NSDate *)date photoIDs:(NSArray *)photoIDs friendly:(BOOL)friendly
++ (void)savePhotoSetWithID:(NSString *)objectID date:(NSDate *)date files:(NSArray *)files friendly:(BOOL)friendly
 {
     NSMutableArray *savedPhotoSets = [[self savedPhotoSets] mutableCopy];
     
@@ -26,7 +26,7 @@
     
     NSNumber *friend = [NSNumber numberWithBool:friendly];
     
-    NSDictionary *newPhotoSet = @{ kPhotoSetID : objectID, kPhotoSetDate : date, kFriendlyKey : friend, kPhotoIDs : photoIDs };
+    NSDictionary *newPhotoSet = @{ kPhotoSetID : objectID, kPhotoSetDate : date, kFriendlyKey : friend, kPhotoFiles : files };
     
     if( [savedPhotoSets containsObject:newPhotoSet] )
     {
@@ -44,12 +44,12 @@
     return [[NSUserDefaults standardUserDefaults] objectForKey:kSavedPhotoSets];
 }
 
-+ (void)getImageForPhotoID:(NSString *)photoID withBlock:(void (^)(UIImage *, NSError *))completion
++ (void)getImageWithURL:(NSString *)url withBlock:(void(^)( UIImage *image, NSError *error ))completion
 {
-    PFQuery *photoQuery = [PFQuery queryWithClassName:kPhotoClass];
-    [photoQuery whereKey:kObjectIDKey equalTo:photoID];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
     
-    [photoQuery findObjectsInBackgroundWithBlock:^( NSArray *objects, NSError *error )
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:
+    ^(NSURLResponse *response, NSData *data, NSError *error)
     {
         if( error )
         {
@@ -57,22 +57,8 @@
         }
         else
         {
-            PFObject *userPhoto = [objects lastObject];
-            PFFile *photoFile = userPhoto[@"photo"];
-            
-            [photoFile getDataInBackgroundWithBlock:^( NSData *data, NSError *error )
-            {
-                if( error )
-                {
-                    completion( nil, error );
-                }
-                else
-                {
-                    UIImage *image = [UIImage imageWithData:data];
-                    
-                    completion( image, nil );
-                }
-            }];
+            UIImage *image = [UIImage imageWithData:data];
+            completion( image, nil );
         }
     }];
 }

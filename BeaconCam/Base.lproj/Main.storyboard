@@ -7,7 +7,7 @@
         <!--InitialVC - BeaconCam-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController id="vXZ-lx-hvc" customClass="BCInitialVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="initialVC" id="vXZ-lx-hvc" customClass="BCInitialVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
@@ -66,12 +66,24 @@
                                 <fontDescription key="fontDescription" name="Avenir-Light" family="Avenir" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="In Range" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vgy-gV-jwr">
+                                <rect key="frame" x="20" y="527" width="120" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="Vnt-eO-N5C"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Avenir-Light" family="Avenir" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="vgy-gV-jwr" secondAttribute="trailing" constant="180" id="KSX-Vq-2l1"/>
                             <constraint firstAttribute="trailing" secondItem="aKb-ft-GDQ" secondAttribute="trailing" constant="20" id="R1w-VH-ArO"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="vgy-gV-jwr" secondAttribute="bottom" constant="21" id="Tr4-Si-Zsb"/>
                             <constraint firstItem="aKb-ft-GDQ" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="240" id="cGu-Ij-xF9"/>
                             <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="aKb-ft-GDQ" secondAttribute="bottom" constant="20" id="eo5-gV-dFP"/>
+                            <constraint firstItem="vgy-gV-jwr" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="zIv-dJ-JLX"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="BeaconCam" id="f7u-BU-x8U">
@@ -82,6 +94,7 @@
                         <outlet property="beaconStatusLabel" destination="ljB-RP-kGw" id="0Zd-pm-hMP"/>
                         <outlet property="cameraModeButton" destination="3B2-d7-HZ7" id="0dY-jB-jhR"/>
                         <outlet property="enableBeaconSearchButton" destination="9bw-hU-FoC" id="4Xe-Uw-6jI"/>
+                        <outlet property="rangeStatusLabel" destination="vgy-gV-jwr" id="Wnc-vo-KAm"/>
                         <outlet property="setupButton" destination="aKb-ft-GDQ" id="HWC-5h-vZQ"/>
                         <outlet property="viewPhotosButton" destination="OuV-My-ogw" id="eim-rM-f9D"/>
                         <segue destination="OSZ-wt-J3J" kind="modal" identifier="serverMode" id="loA-DI-BFT"/>
@@ -105,9 +118,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M55-7Q-IeL">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M55-7Q-IeL">
                                 <rect key="frame" x="20" y="20" width="80" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="Tha-tT-gec"/>
+                                </constraints>
                                 <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -115,15 +131,39 @@
                                     <action selector="exitView" destination="OSZ-wt-J3J" eventType="touchUpInside" id="vJh-VH-X9C"/>
                                 </connections>
                             </button>
-                            <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="u06-yX-hmc">
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="u06-yX-hmc">
                                 <rect key="frame" x="18" y="270" width="154" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="150" id="zzJ-8Y-Ctg"/>
+                                </constraints>
                                 <connections>
                                     <action selector="changeMotionSensitivity:" destination="OSZ-wt-J3J" eventType="valueChanged" id="3hj-O7-ATH"/>
                                 </connections>
                             </slider>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Warming Up: 60" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dof-ja-FQR">
+                                <rect key="frame" x="391" y="279" width="165" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="165" id="Ry6-Ok-31r"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Avenir-Light" family="Avenir" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="lFI-p9-7YI" firstAttribute="top" secondItem="dof-ja-FQR" secondAttribute="bottom" constant="21" id="CbR-7h-55P"/>
+                            <constraint firstItem="dof-ja-FQR" firstAttribute="top" secondItem="sdf-AT-t8d" secondAttribute="bottom" constant="279" id="G9r-i8-oyB"/>
+                            <constraint firstItem="M55-7Q-IeL" firstAttribute="leading" secondItem="kfX-ii-ZoJ" secondAttribute="leading" constant="20" id="XB7-Ts-7I2"/>
+                            <constraint firstItem="u06-yX-hmc" firstAttribute="leading" secondItem="kfX-ii-ZoJ" secondAttribute="leading" constant="20" id="XYR-eA-n6b"/>
+                            <constraint firstItem="M55-7Q-IeL" firstAttribute="top" secondItem="sdf-AT-t8d" secondAttribute="bottom" constant="20" id="aQH-Ke-bOB"/>
+                            <constraint firstItem="lFI-p9-7YI" firstAttribute="top" secondItem="M55-7Q-IeL" secondAttribute="bottom" constant="260" id="cpZ-bW-23p"/>
+                            <constraint firstAttribute="trailing" secondItem="dof-ja-FQR" secondAttribute="trailing" constant="12" id="jdu-qS-Hhl"/>
+                            <constraint firstItem="lFI-p9-7YI" firstAttribute="top" secondItem="u06-yX-hmc" secondAttribute="bottom" constant="20" id="kWX-zP-OH8"/>
+                            <constraint firstItem="u06-yX-hmc" firstAttribute="top" secondItem="sdf-AT-t8d" secondAttribute="bottom" constant="270" id="ohl-KI-UCG"/>
+                        </constraints>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <navigationItem key="navigationItem" id="m2G-ij-FvU"/>
@@ -132,6 +172,7 @@
                     <connections>
                         <outlet property="exitButton" destination="M55-7Q-IeL" id="Xss-Mi-q9o"/>
                         <outlet property="sensitivitySlider" destination="u06-yX-hmc" id="TMU-qT-PTJ"/>
+                        <outlet property="timerLabel" destination="dof-ja-FQR" id="FdG-Jz-Dqe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="O8x-mD-46h" userLabel="First Responder" sceneMemberID="firstResponder"/>

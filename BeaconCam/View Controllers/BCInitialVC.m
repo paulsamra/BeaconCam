@@ -13,6 +13,8 @@
 
 @interface BCInitialVC()
 
+@property (strong, nonatomic) NSTimer *checkRangeTimer;
+
 @property (nonatomic) BOOL shouldShowSignUp;
 
 @end
@@ -29,6 +31,15 @@
     }
     
     [self setupButtons];
+    
+    self.rangeStatusLabel.text = [[BCBluetoothManager sharedManager] inBeaconRegion] ? @"In Range" : @"Not In Range";
+    
+    self.checkRangeTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(updateRangeLabel) userInfo:nil repeats:YES];
+}
+
+- (void)updateRangeLabel
+{
+    self.rangeStatusLabel.text = [[BCBluetoothManager sharedManager] inBeaconRegion] ? @"In Range" : @"Not In Range";
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -91,11 +102,13 @@
     if( ![[BCBluetoothManager sharedManager] isListeningForBeacons] )
     {
         [[BCBluetoothManager sharedManager] startListeningForBeacons];
+        NSLog(@"start listening");
     }
     
     else
     {
         [[BCBluetoothManager sharedManager] stopListeningForBeacons];
+        NSLog(@"stop listening");
     }
     
     [self updateBeaconStatusUI];

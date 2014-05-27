@@ -15,6 +15,7 @@
 
 @property (nonatomic) BOOL shouldAlwaysTakePicture;
 @property (nonatomic) BOOL userInRange;
+@property (nonatomic) BOOL inBeaconRegion;
 
 + (BCBluetoothManager *)sharedManager;
 

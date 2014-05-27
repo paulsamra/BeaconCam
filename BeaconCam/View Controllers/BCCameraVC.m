@@ -27,6 +27,7 @@
 
 @property (nonatomic) BOOL initialDetection;
 @property (nonatomic) BOOL motionDetected;
+@property (nonatomic) int  warmupCount;
 
 @end
 
@@ -70,6 +71,9 @@
     }
     
     [BCUserManager deviceDidBecomeBeacon:YES];
+    
+    self.timerLabel.backgroundColor = [BCStyleKit baseButtonColor];
+    self.timerLabel.alpha = 0.5;
 }
 
 - (void)setupCamera
@@ -94,7 +98,8 @@
     [self.view addSubview:self.sensitivitySlider];
     self.motionView.hidden = YES;
     
-    self.warmupTimer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(endWarmup) userInfo:nil repeats:NO];
+    self.warmupCount = 61;
+    self.warmupTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(warmup) userInfo:nil repeats:YES];
     
     __unsafe_unretained BCCameraVC *weakSelf = self;
     [(GPUImageMotionDetector *)self.motionDetector setMotionDetectionBlock:
@@ -125,11 +130,21 @@
     [self.camera addTarget:filterView];
     
     [self.camera startCameraCapture];
+    
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
 }
 
-- (void)endWarmup
+- (void)warmup
 {
-    [self.warmupTimer invalidate];
+    self.warmupCount--;
+    
+    self.timerLabel.text = [NSString stringWithFormat:@"Warming Up: %d", self.warmupCount];
+    
+    if( self.warmupCount == 0 )
+    {
+        self.timerLabel.text = @"";
+        [self.warmupTimer invalidate];
+    }
 }
 
 - (IBAction)exitView
@@ -161,6 +176,21 @@
 {
     BOOL shouldAlwaysTakePicture = [[BCBluetoothManager sharedManager] shouldAlwaysTakePicture];
     BOOL userInRange = [[BCBluetoothManager sharedManager] userInRange];
+    
+    dispatch_async(dispatch_get_main_queue(), ^
+    {
+        if( ![self.warmupTimer isValid] )
+        {
+            if( !userInRange || shouldAlwaysTakePicture )
+            {
+                self.timerLabel.text = @"Motion Mode: ON";
+            }
+            else
+            {
+                self.timerLabel.text = @"Motion Mode: OFF";
+            }
+        }
+    });
     
     if( self.motionDetected && ( shouldAlwaysTakePicture || !userInRange ) && ![self.warmupTimer isValid] )
     {
@@ -259,6 +289,7 @@
     [self.intervalTimer invalidate];
     [BCUserManager deviceDidBecomeBeacon:NO];
 
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
 }
 
 @end

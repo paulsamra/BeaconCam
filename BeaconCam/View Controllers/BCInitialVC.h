@@ -15,5 +15,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *setupButton;
 @property (weak, nonatomic) IBOutlet UIButton *viewPhotosButton;
 @property (weak, nonatomic) IBOutlet UILabel *beaconStatusLabel;
+@property (weak, nonatomic) IBOutlet UILabel *rangeStatusLabel;
 
 @end

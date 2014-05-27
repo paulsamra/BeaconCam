@@ -13,10 +13,12 @@
 
 @interface BCPhotosVC() <UIActionSheetDelegate>
 
-@property (strong, nonatomic) NSDateFormatter *dateFormatter;
-@property (strong, nonatomic) UIActionSheet   *actionSheet;
+@property (strong, nonatomic) NSDateFormatter       *dateFormatter;
+@property (strong, nonatomic) UIActionSheet         *actionSheet;
+@property (strong, nonatomic) NSMutableDictionary   *images;
 
 @end
+
 
 @implementation BCPhotosVC
 
@@ -25,6 +27,8 @@
     [super viewDidLoad];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadPhotos) name:kPhotosLoaded object:nil];
+    
+    self.images = [[NSMutableDictionary alloc] init];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -55,30 +59,46 @@
 {
     NSDictionary *photoSet = [[BCPhotosManager savedPhotoSets] objectAtIndex:section];
     
-    return [[photoSet objectForKey:kPhotoIDs] count];
+    return [[photoSet objectForKey:kPhotoFiles] count];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"photoCell" forIndexPath:indexPath];
     
-    UIActivityIndicatorView *busyIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    busyIndicator.center = cell.contentView.center;
+    NSDictionary *photoSet = [[BCPhotosManager savedPhotoSets] objectAtIndex:indexPath.section];
     
-    [busyIndicator startAnimating];
-    
-    [cell.contentView addSubview:busyIndicator];
+    NSString *photoURL = [[photoSet objectForKey:kPhotoFiles] objectAtIndex:indexPath.row];
     
     UIImageView *imageView = (UIImageView *)[cell viewWithTag:100];
     
-    NSDictionary *photoSet = [[BCPhotosManager savedPhotoSets] objectAtIndex:indexPath.section];
-    NSString *photoID = [[photoSet objectForKey:kPhotoIDs] objectAtIndex:indexPath.row];
-    
-    [BCPhotosManager getImageForPhotoID:photoID withBlock:^( UIImage *image, NSError *error )
+    if( ![self.images objectForKey:indexPath] )
     {
-        imageView.image = image;
-        [busyIndicator stopAnimating];
-    }];
+        UIActivityIndicatorView *busyIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        busyIndicator.center = cell.contentView.center;
+        
+        [busyIndicator startAnimating];
+        
+        [cell.contentView addSubview:busyIndicator];
+        
+        [BCPhotosManager getImageWithURL:photoURL withBlock:^( UIImage *image, NSError *error )
+        {
+            if( !error )
+            {
+                imageView.image = image;
+                [self.images setObject:image forKey:indexPath];
+                [busyIndicator stopAnimating];
+            }
+            else
+            {
+                NSLog(@"Error getting image: %@", error.localizedDescription);
+            }
+        }];
+    }
+    else
+    {
+        imageView.image = [self.images objectForKey:indexPath];
+    }
     
     return cell;
 }

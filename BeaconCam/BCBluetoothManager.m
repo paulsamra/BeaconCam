@@ -21,7 +21,6 @@ static NSString *kBeaconUUID = @"4B5B9305-BA7F-4E69-B985-FB505253D81F";
 @property (strong, nonatomic) CLBeaconRegion      *beaconRegion;
 
 @property (nonatomic) BOOL initialRegionCheck;
-@property (nonatomic) BOOL inBeaconRegion;
 @property (nonatomic) BOOL listeningForBeacons;
 
 @end

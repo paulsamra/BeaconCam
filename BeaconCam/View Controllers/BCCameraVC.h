@@ -15,5 +15,6 @@
 @property (strong, nonatomic) GPUImageStillCamera *camera;
 @property (weak, nonatomic) IBOutlet UIButton *exitButton;
 @property (weak, nonatomic) IBOutlet UISlider *sensitivitySlider;
+@property (weak, nonatomic) IBOutlet UILabel *timerLabel;
 
 @end

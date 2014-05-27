@@ -11,14 +11,14 @@
 #define kPhotoSetID     @"photoSetID"
 #define kPhotoSetDate   @"photoSetDate"
 #define kFriendlyKey    @"friendly"
-#define kPhotoIDs       @"photoIDs"
+#define kPhotoFiles     @"photoFiles"
 #define kPhotosLoaded   @"photosLoaded"
 
 @interface BCPhotosManager : NSObject
 
-+ (void)savePhotoSetWithID:(NSString *)objectID date:(NSDate *)date photoIDs:(NSArray *)photoIDs friendly:(BOOL)friendly;
++ (void)savePhotoSetWithID:(NSString *)objectID date:(NSDate *)date files:(NSArray *)files friendly:(BOOL)friendly;
 + (NSArray *)savedPhotoSets;
-+ (void)getImageForPhotoID:(NSString *)photoID withBlock:(void(^)( UIImage *image, NSError *error ))completion;
++ (void)getImageWithURL:(NSString *)url withBlock:(void(^)( UIImage *image, NSError *error ))completion;
 + (void)deleteSavedPhotos;
 
 @end

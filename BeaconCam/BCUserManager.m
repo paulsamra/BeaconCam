@@ -15,7 +15,6 @@
 #define kEmailKey           @"email"
 #define kUserClass          @"User"
 #define kPictureSettingKey  @"picture_setting"
-#define kUserPhotoClass     @"UserPhoto"
 #define kPhotoKey           @"photo"
 #define kPhotosArrayKey     @"photos"
 #define kPhotoSetClass      @"UserPhotoSet"
@@ -156,9 +155,12 @@
 {
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     
-    [currentInstallation setObject:[NSNumber numberWithBool:isBeacon] forKey:@"isBeacon"];
-    
-    [currentInstallation saveInBackground];
+    if( currentInstallation )
+    {
+        [currentInstallation setObject:[NSNumber numberWithBool:isBeacon] forKey:@"isBeacon"];
+        
+        [currentInstallation saveInBackground];
+    }
 }
 
 + (void)notifyBeaconWithStatus:(BOOL)inside
@@ -234,12 +236,16 @@
         BCAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
         [appDelegate setShouldGoToPhotos:YES];
         [appDelegate setNeedsPhotoUpdate:YES];
+        
+        NSLog(@"Getting photos");
+        
+        [self getAvailablePhotos];
     }
 }
 
 + (void)sendPhotos:(NSArray *)photos withStatus:(BOOL)friendly
 {
-    NSMutableArray *photoObjects = [[NSMutableArray alloc] init];
+    NSMutableArray *photoFiles = [[NSMutableArray alloc] init];
     
     int imageCount = 1;
     for( NSString *photoPath in photos )
@@ -247,10 +253,7 @@
         NSString *fileName = [NSString stringWithFormat:@"%d.jpg", imageCount];
         PFFile *imageFile = [PFFile fileWithName:fileName contentsAtPath:photoPath];
         
-        PFObject *userPhoto = [PFObject objectWithClassName:kUserPhotoClass];
-        [userPhoto setObject:imageFile forKey:kPhotoKey];
-        
-        [photoObjects addObject:userPhoto];
+        [photoFiles addObject:imageFile];
         imageCount++;
     }
     
@@ -262,7 +265,7 @@
         PFObject *userObject = [objects lastObject];
         
         PFObject *newPhotoSet = [PFObject objectWithClassName:kPhotoSetClass];
-        [newPhotoSet setObject:[photoObjects copy] forKey:@"photos"];
+        [newPhotoSet setObject:[photoFiles copy] forKey:@"photos"];
         
         [newPhotoSet setObject:[NSNumber numberWithBool:friendly] forKey:@"friendly"];
         
@@ -282,7 +285,10 @@
             {
                 for( NSString *filePath in photos )
                 {
-                    [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+                    if( [[NSFileManager defaultManager] fileExistsAtPath:filePath] )
+                    {
+                        [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+                    }
                 }
             }
         }];
@@ -299,11 +305,11 @@
     
     if( friendly )
     {
-        message = @"Friendly Alert! Motion has been detected!";
+        message = kFriendlyKey;
     }
     else
     {
-        message = @"Intruder Alert! Motion has been detected!";
+        message = kIntruderMessage;
     }
     
     [push setMessage:message];
@@ -312,6 +318,11 @@
 
 + (void)getAvailablePhotos
 {
+    if( ![BCUserManager currentUserEmail] )
+    {
+        return;
+    }
+    
     PFQuery *userQuery = [PFQuery queryWithClassName:kUserClass];
     [userQuery whereKey:kEmailKey equalTo:[BCUserManager currentUserEmail]];
     
@@ -328,14 +339,14 @@
             NSNumber *friendly    = photoSet[kFriendlyKey];
             NSDate   *createdAt   = photoSet.createdAt;
             
-            NSMutableArray *photoIDs = [[NSMutableArray alloc] init];
+            NSMutableArray *photoFiles = [[NSMutableArray alloc] init];
             
-            for( PFObject *photo in photosArray )
+            for( PFFile *photo in photosArray )
             {
-                [photoIDs addObject:photo.objectId];
+                [photoFiles addObject:photo.url];
             }
-            
-            [BCPhotosManager savePhotoSetWithID:photoSetID date:createdAt photoIDs:photoIDs friendly:[friendly boolValue]];
+                        
+            [BCPhotosManager savePhotoSetWithID:photoSetID date:createdAt files:photoFiles friendly:[friendly boolValue]];
             
             [[NSNotificationCenter defaultCenter] postNotificationName:kPhotosLoaded object:nil];
         }

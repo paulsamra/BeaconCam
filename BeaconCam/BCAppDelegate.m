@@ -60,6 +60,8 @@
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     
+    NSLog( @"DID ENTER BACKGROUND" );
+    
     [BCUserManager deviceDidBecomeBeacon:NO];
 }
 
@@ -67,30 +69,35 @@
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     
-    if( self.shouldGoToPhotos )
-    {
-        UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        
-        UINavigationController *initialVC = [mainStoryboard instantiateInitialViewController];
-        
-        UIViewController *photosVC = [mainStoryboard instantiateViewControllerWithIdentifier:@"photosVC"];
-        
-        [initialVC pushViewController:photosVC animated:NO];
-        
-        self.window.rootViewController = initialVC;
-        
-        self.shouldGoToPhotos = NO;
-    }
+    NSLog(@"WILL ENTER FOREGROUND");
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    NSLog(@" DID BECOME ACTIVE" );
+        
+    if( self.shouldGoToPhotos )
+    {
+        UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        UIViewController *initialVC  = [mainStoryboard instantiateViewControllerWithIdentifier:@"initialVC"];
+        UIViewController *photosVC   = [mainStoryboard instantiateViewControllerWithIdentifier:@"photosVC"];
+        
+        UINavigationController *navigationVC = [[UINavigationController alloc] init];
+        
+        navigationVC.viewControllers   = @[ initialVC, photosVC ];
+        self.window.rootViewController = navigationVC;
+        
+        self.shouldGoToPhotos = NO;
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    
+    NSLog( @"application will terminate" );
     
     [BCUserManager deviceDidBecomeBeacon:NO];
 }
