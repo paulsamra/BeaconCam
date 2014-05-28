@@ -47,6 +47,10 @@
     self.emailField.delegate = self;
     
     self.alwaysTakePictureSwitch.on = [BCUserManager shouldAlwaysTakePicture];
+    
+    NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    
+    self.versionLabel.text = [NSString stringWithFormat:@"Alpha %@", appVersion];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -68,7 +72,7 @@
     
     else
     {
-        [BCUserManager setUserEmail:self.emailField.text];
+        [BCUserManager setUserEmail:[self.emailField.text lowercaseString]];
         
         [[NSUserDefaults standardUserDefaults] setObject:self.pictureIntervalField.text forKey:@"pictureInterval"];
         [[NSUserDefaults standardUserDefaults] synchronize];

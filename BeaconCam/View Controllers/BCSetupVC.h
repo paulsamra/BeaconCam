@@ -14,5 +14,6 @@
 @property (weak, nonatomic) IBOutlet UISwitch *alwaysTakePictureSwitch;
 @property (weak, nonatomic) IBOutlet UIButton *submitButton;
 @property (weak, nonatomic) IBOutlet UITextField *pictureIntervalField;
+@property (weak, nonatomic) IBOutlet UILabel *versionLabel;
 
 @end

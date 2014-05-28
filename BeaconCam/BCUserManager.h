@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define kPhotosUpdated @"photos_updated"
+
 @interface BCUserManager : NSObject
 
 + (NSString *)currentUserEmail;

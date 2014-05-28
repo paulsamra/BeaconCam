@@ -10,12 +10,18 @@
 #import "BCUserManager.h"
 #import "BCPhotosManager.h"
 #import "BCAppDelegate.h"
+#import "UIImageView+UIActivityIndicatorForSDWebImage.h"
+#import "BCStyleKit.h"
+#import "BCPhotoBrowser.h"
 
-@interface BCPhotosVC() <UIActionSheetDelegate>
+@interface BCPhotosVC() <UIActionSheetDelegate, MWPhotoBrowserDelegate>
 
 @property (strong, nonatomic) NSDateFormatter       *dateFormatter;
-@property (strong, nonatomic) UIActionSheet         *actionSheet;
 @property (strong, nonatomic) NSMutableDictionary   *images;
+@property (strong, nonatomic) NSArray               *imagesToBrowse;
+@property (strong, nonatomic) UIRefreshControl      *refreshControl;
+
+@property (nonatomic) int sectionToBrowse;
 
 @end
 
@@ -27,8 +33,11 @@
     [super viewDidLoad];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadPhotos) name:kPhotosLoaded object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTable) name:kPhotosUpdated object:nil];
     
     self.images = [[NSMutableDictionary alloc] init];
+    
+    [self.collectionView addSubview:self.refreshControl];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -47,6 +56,16 @@
         [self.collectionView reloadData];
         
         appDelegate.needsPhotoUpdate = NO;
+    }
+}
+
+- (void)refreshTable
+{
+    [self.collectionView reloadData];
+    
+    if( [self.refreshControl isRefreshing] )
+    {
+        [self.refreshControl endRefreshing];
     }
 }
 
@@ -72,33 +91,7 @@
     
     UIImageView *imageView = (UIImageView *)[cell viewWithTag:100];
     
-    if( ![self.images objectForKey:indexPath] )
-    {
-        UIActivityIndicatorView *busyIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        busyIndicator.center = cell.contentView.center;
-        
-        [busyIndicator startAnimating];
-        
-        [cell.contentView addSubview:busyIndicator];
-        
-        [BCPhotosManager getImageWithURL:photoURL withBlock:^( UIImage *image, NSError *error )
-        {
-            if( !error )
-            {
-                imageView.image = image;
-                [self.images setObject:image forKey:indexPath];
-                [busyIndicator stopAnimating];
-            }
-            else
-            {
-                NSLog(@"Error getting image: %@", error.localizedDescription);
-            }
-        }];
-    }
-    else
-    {
-        imageView.image = [self.images objectForKey:indexPath];
-    }
+    [imageView setImageWithURL:[NSURL URLWithString:photoURL] placeholderImage:nil usingActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     
     return cell;
 }
@@ -128,34 +121,73 @@
     
     headerLabel.text = labelText;
     
-    UIButton *actionButton = (UIButton *)[headerView viewWithTag:102];
-    
-    if( indexPath.section == 0 )
-    {
-        [actionButton addTarget:self action:@selector(takeAction) forControlEvents:UIControlEventTouchUpInside];
-    }
-    else
-    {
-        actionButton.hidden = YES;
-    }
-    
-    
     return headerView;
 }
 
-- (void)takeAction
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self.actionSheet showInView:self.view];
-}
-
-- (UIActionSheet *)actionSheet
-{
-    if( !_actionSheet )
+    self.sectionToBrowse = indexPath.section;
+    
+    NSDictionary *photoSet = [[BCPhotosManager savedPhotoSets] objectAtIndex:indexPath.section];
+    
+    NSMutableArray *images = [[NSMutableArray alloc] init];
+    
+    for( int i = 0; i < [[photoSet objectForKey:kPhotoFiles] count]; i++ )
     {
-        _actionSheet = [[UIActionSheet alloc] initWithTitle:@"Choose Action To Take" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Notify Police", nil];
+        NSIndexPath *path = [NSIndexPath indexPathForRow:i inSection:indexPath.section];
+        UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:path];
+        UIImageView *imageView = (UIImageView *)[cell viewWithTag:100];
+        
+        MWPhoto *photo = [MWPhoto photoWithImage:imageView.image];
+        [images addObject:photo];
     }
     
-    return _actionSheet;
+    self.imagesToBrowse = images;
+    
+	BCPhotoBrowser *browser = [[BCPhotoBrowser alloc] initWithDelegate:self];
+    browser.displayActionButton     = NO;
+    browser.displayNavArrows        = YES;
+    browser.displaySelectionButtons = NO;
+    browser.alwaysShowControls      = YES;
+    browser.zoomPhotosToFill        = YES;
+    browser.enableGrid              = NO;
+    browser.enableSwipeToDismiss    = YES;
+    [browser setCurrentPhotoIndex:indexPath.row];
+    
+    [self.navigationController pushViewController:browser animated:YES];
+}
+
+- (NSUInteger)numberOfPhotosInPhotoBrowser:(MWPhotoBrowser *)photoBrowser
+{
+    NSDictionary *photoSet = [[BCPhotosManager savedPhotoSets] objectAtIndex:self.sectionToBrowse];
+    
+    return [[photoSet objectForKey:kPhotoFiles] count];
+}
+
+- (id<MWPhoto>)photoBrowser:(MWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index
+{
+    if( index < [self.imagesToBrowse count] )
+    {
+        return [self.imagesToBrowse objectAtIndex:index];
+    }
+    
+    return nil;
+}
+
+- (void)refreshPhotos
+{
+    [BCUserManager getAvailablePhotos];
+}
+
+- (UIRefreshControl *)refreshControl
+{
+    if( !_refreshControl )
+    {
+        _refreshControl = [[UIRefreshControl alloc] init];
+        [_refreshControl addTarget:self action:@selector(refreshPhotos) forControlEvents:UIControlEventValueChanged];
+    }
+    
+    return _refreshControl;
 }
 
 - (NSDateFormatter *)dateFormatter

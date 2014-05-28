@@ -39,28 +39,14 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
++ (void)savePhotoSets:(NSArray *)photoSets
+{
+    [[NSUserDefaults standardUserDefaults] setObject:photoSets forKey:kSavedPhotoSets];
+}
+
 + (NSArray *)savedPhotoSets
 {
     return [[NSUserDefaults standardUserDefaults] objectForKey:kSavedPhotoSets];
-}
-
-+ (void)getImageWithURL:(NSString *)url withBlock:(void(^)( UIImage *image, NSError *error ))completion
-{
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
-    
-    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:
-    ^(NSURLResponse *response, NSData *data, NSError *error)
-    {
-        if( error )
-        {
-            completion( nil, error );
-        }
-        else
-        {
-            UIImage *image = [UIImage imageWithData:data];
-            completion( image, nil );
-        }
-    }];
 }
 
 + (void)deleteSavedPhotos

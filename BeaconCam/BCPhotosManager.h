@@ -17,8 +17,8 @@
 @interface BCPhotosManager : NSObject
 
 + (void)savePhotoSetWithID:(NSString *)objectID date:(NSDate *)date files:(NSArray *)files friendly:(BOOL)friendly;
++ (void)savePhotoSets:(NSArray *)photoSets;
 + (NSArray *)savedPhotoSets;
-+ (void)getImageWithURL:(NSString *)url withBlock:(void(^)( UIImage *image, NSError *error ))completion;
 + (void)deleteSavedPhotos;
 
 @end

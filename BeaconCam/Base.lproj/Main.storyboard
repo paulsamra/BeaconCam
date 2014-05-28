@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13C1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="vcl-Dk-dLF">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="vcl-Dk-dLF">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -241,8 +241,23 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
                             </textField>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="egO-R3-Da7">
+                                <rect key="frame" x="35" y="532" width="250" height="25"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="OUL-iD-lHG"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Avenir-Light" family="Avenir" pointSize="26"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="egO-R3-Da7" firstAttribute="leading" secondItem="1ch-nM-XPZ" secondAttribute="leading" constant="35" id="Esh-tZ-K1G"/>
+                            <constraint firstItem="g1s-Jj-s14" firstAttribute="top" secondItem="egO-R3-Da7" secondAttribute="bottom" constant="11" id="WmZ-Qw-Wko"/>
+                            <constraint firstAttribute="trailing" secondItem="egO-R3-Da7" secondAttribute="trailing" constant="35" id="gNk-xb-6TN"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Setup" id="lnD-2W-nY8"/>
                     <connections>
@@ -250,6 +265,7 @@
                         <outlet property="emailField" destination="js8-cn-VVw" id="DZ3-f5-Lwi"/>
                         <outlet property="pictureIntervalField" destination="THW-OA-cqK" id="t8v-30-jtz"/>
                         <outlet property="submitButton" destination="kPe-LW-e6O" id="Acf-Ok-SAj"/>
+                        <outlet property="versionLabel" destination="egO-R3-Da7" id="BXt-Vd-8C1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="X6M-11-6oc" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -325,20 +341,12 @@
                             <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="101" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="YTE-eU-geS">
-                                    <rect key="frame" x="20" y="5" width="180" height="20"/>
+                                    <rect key="frame" x="20" y="5" width="280" height="20"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <fontDescription key="fontDescription" name="Avenir-Light" family="Avenir" pointSize="17"/>
+                                    <fontDescription key="fontDescription" name="Avenir-Light" family="Avenir" pointSize="18"/>
                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <button opaque="NO" tag="102" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bze-K0-Y01">
-                                    <rect key="frame" x="220" y="5" width="80" height="20"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <fontDescription key="fontDescription" name="Avenir-Light" family="Avenir" pointSize="15"/>
-                                    <state key="normal" title="Take Action">
-                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                    </state>
-                                </button>
                             </subviews>
                             <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         </collectionReusableView>

@@ -290,30 +290,30 @@
                         [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
                     }
                 }
+                
+                PFQuery *installationQuery = [PFInstallation query];
+                [installationQuery whereKey:@"user" matchesQuery:userQuery];
+                [installationQuery whereKey:@"isBeacon" equalTo:[NSNumber numberWithBool:NO]];
+                
+                PFPush *push = [[PFPush alloc] init];
+                [push setQuery:installationQuery];
+                
+                NSString *message = nil;
+                
+                if( friendly )
+                {
+                    message = kFriendlyMessage;
+                }
+                else
+                {
+                    message = kIntruderMessage;
+                }
+                
+                [push setMessage:message];
+                [push sendPushInBackground];
             }
         }];
     }];
-    
-    PFQuery *installationQuery = [PFInstallation query];
-    [installationQuery whereKey:@"user" matchesQuery:userQuery];
-    [installationQuery whereKey:@"isBeacon" equalTo:[NSNumber numberWithBool:NO]];
-    
-    PFPush *push = [[PFPush alloc] init];
-    [push setQuery:installationQuery];
-    
-    NSString *message = nil;
-    
-    if( friendly )
-    {
-        message = kFriendlyKey;
-    }
-    else
-    {
-        message = kIntruderMessage;
-    }
-    
-    [push setMessage:message];
-    [push sendPushInBackground];
 }
 
 + (void)getAvailablePhotos
@@ -332,6 +332,8 @@
     
     [photoSetsQuery findObjectsInBackgroundWithBlock:^( NSArray *objects, NSError *error )
     {
+        NSMutableArray *photoSets = [[NSMutableArray alloc] init];
+        
         for( PFObject *photoSet in objects )
         {
             NSString *photoSetID  = photoSet.objectId;
@@ -345,11 +347,17 @@
             {
                 [photoFiles addObject:photo.url];
             }
-                        
-            [BCPhotosManager savePhotoSetWithID:photoSetID date:createdAt files:photoFiles friendly:[friendly boolValue]];
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:kPhotosLoaded object:nil];
+            NSDictionary *photoSet = @{ kPhotoSetID  : photoSetID, kPhotoFiles   : photoFiles,
+                                        kFriendlyKey : friendly,   kCreatedAtKey : createdAt };
+            
+            [photoSets insertObject:photoSet atIndex:0];
         }
+        
+        [BCPhotosManager savePhotoSets:photoSets];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPhotosLoaded object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kPhotosUpdated object:nil];
     }];
 }
 

@@ -28,6 +28,7 @@
 @property (nonatomic) BOOL initialDetection;
 @property (nonatomic) BOOL motionDetected;
 @property (nonatomic) int  warmupCount;
+@property (nonatomic) int  pictureLimit;
 
 @end
 
@@ -58,6 +59,8 @@
     self.lastTakenDate = nil;
     
     self.availablePhotos = [[NSMutableArray alloc] init];
+    
+    self.pictureLimit = 6;
     
     NSNumber *pictureInterval = [[NSUserDefaults standardUserDefaults] objectForKey:@"pictureInterval"];
     
@@ -109,6 +112,7 @@
         {
             CGFloat motionBoxWidth = 1500.0 * motionIntensity;
             CGSize viewBounds = weakSelf.view.bounds.size;
+            
             weakSelf.motionDetected = YES;
             
             dispatch_async(dispatch_get_main_queue(), ^
@@ -169,6 +173,10 @@
 
 - (void)stopDeadTimer
 {
+    NSLog(@"OUT OF DEAD TIMER");
+    self.motionDetected = NO;
+    self.pictureLimit   = 6;
+    
     [self.deadTimer invalidate];
 }
 
@@ -192,28 +200,26 @@
         }
     });
     
-    if( self.motionDetected && ( shouldAlwaysTakePicture || !userInRange ) && ![self.warmupTimer isValid] )
+    BOOL shouldTakePicture = ( shouldAlwaysTakePicture || !userInRange );
+    BOOL underLimit = ( self.pictureLimit > 0 );
+    
+    if( self.motionDetected && shouldTakePicture && ![self.warmupTimer isValid] && ![self.deadTimer isValid] && underLimit )
     {
-        if( ![self.deadTimer isValid] )
+        if( ![self.motionTimer isValid] )
         {
-            if( ![self.motionTimer isValid] )
-            {
-                self.motionTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(startDeadTimer) userInfo:nil repeats:NO];
-            }
-            
-            NSLog(@"WILL TAKE PICTURE");
-            
-            self.motionDetected = NO;
-            
-            [self.brightnessFilter useNextFrameForImageCapture];
-            
-            [self performSelector:@selector(saveImage) withObject:nil afterDelay:0.1];
+            self.motionTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(startDeadTimer) userInfo:nil repeats:NO];
         }
-    }
-    else
-    {
+        
+        NSLog(@"WILL TAKE PICTURE");
+        
         self.motionDetected = NO;
+        
+        [self.brightnessFilter useNextFrameForImageCapture];
+        
+        [self performSelector:@selector(saveImage) withObject:nil afterDelay:0.2];
     }
+    
+    self.motionDetected = NO;
 }
 
 - (void)saveImage
@@ -222,6 +228,8 @@
     
     if( cameraImage && !self.initialDetection )
     {
+        self.pictureLimit--;
+        
         dispatch_queue_t backgroundQueue = dispatch_queue_create("imageSaveThread", 0);
         
         dispatch_async(backgroundQueue, ^
@@ -260,6 +268,8 @@
     BOOL userInRange = [[BCBluetoothManager sharedManager] userInRange];
     
     [BCUserManager sendPhotos:[self.availablePhotos copy] withStatus:( shouldAlwaysTakePicture || userInRange )];
+    
+    self.availablePhotos = [[NSMutableArray alloc] init];
 }
 
 - (IBAction)changeMotionSensitivity:(UISlider *)sender
@@ -287,6 +297,9 @@
     [[BCBluetoothManager sharedManager] stopBroadcasting];
     [self.camera stopCameraCapture];
     [self.intervalTimer invalidate];
+    [self.deadTimer invalidate];
+    [self.warmupTimer invalidate];
+    [self.motionTimer invalidate];
     [BCUserManager deviceDidBecomeBeacon:NO];
 
     [UIApplication sharedApplication].idleTimerDisabled = NO;
