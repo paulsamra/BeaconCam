@@ -138,7 +138,7 @@ static NSString *kBeaconUUID = @"4B5B9305-BA7F-4E69-B985-FB505253D81F";
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
     self.inBeaconRegion = YES;
-    //[BCUserManager notifyBeaconWithStatus:YES];
+    [BCUserManager notifyBeaconWithStatus:YES];
     NSLog(@"Entered iBeacon region.");
 }
 
@@ -146,7 +146,7 @@ static NSString *kBeaconUUID = @"4B5B9305-BA7F-4E69-B985-FB505253D81F";
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
     self.inBeaconRegion = NO;
-    //[BCUserManager notifyBeaconWithStatus:NO];
+    [BCUserManager notifyBeaconWithStatus:NO];
     NSLog(@"Exited iBeacon region.");
 }
 

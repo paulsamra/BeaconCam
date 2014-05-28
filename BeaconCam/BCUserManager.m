@@ -309,7 +309,7 @@
                     message = kIntruderMessage;
                 }
                 
-                [push setMessage:message];
+                [push setData:@{ @"alert" : message, @"sound" : @"a" }];
                 [push sendPushInBackground];
             }
         }];
@@ -349,7 +349,7 @@
             }
             
             NSDictionary *photoSet = @{ kPhotoSetID  : photoSetID, kPhotoFiles   : photoFiles,
-                                        kFriendlyKey : friendly,   kCreatedAtKey : createdAt };
+                                        kFriendlyKey : friendly,   kPhotoSetDate : createdAt };
             
             [photoSets insertObject:photoSet atIndex:0];
         }

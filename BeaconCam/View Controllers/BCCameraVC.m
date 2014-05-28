@@ -214,7 +214,7 @@
         
         self.motionDetected = NO;
         
-        [self.brightnessFilter useNextFrameForImageCapture];
+        [self.camera useNextFrameForImageCapture];
         
         [self performSelector:@selector(saveImage) withObject:nil afterDelay:0.2];
     }
@@ -224,42 +224,88 @@
 
 - (void)saveImage
 {
-    UIImage *cameraImage = [self.brightnessFilter imageFromCurrentFramebufferWithOrientation:UIImageOrientationUp];
-    
-    if( cameraImage && !self.initialDetection )
-    {
-        self.pictureLimit--;
-        
-        dispatch_queue_t backgroundQueue = dispatch_queue_create("imageSaveThread", 0);
-        
-        dispatch_async(backgroundQueue, ^
+    //if( !self.initialDetection )
+    //{
+        [self.camera capturePhotoAsImageProcessedUpToFilter:self.brightnessFilter withCompletionHandler:
+        ^( UIImage *image, NSError *error )
         {
-            NSData   *pictureData = UIImageJPEGRepresentation(cameraImage, 0.8);
-            
-            NSArray  *directories = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-            NSString *documentsDirectory = [directories objectAtIndex:0];
-            
-            NSError  *error = nil;
-            NSString *fileName = [NSString stringWithFormat:@"image-%@", [NSDate date]];
-            NSString *filePathToWrite = [documentsDirectory stringByAppendingPathComponent:fileName];
-            
-            [pictureData writeToFile:filePathToWrite options:NSAtomicWrite error:&error];
-
-            if( error )
+            if( image )
             {
-                NSLog(@"%@", error.localizedDescription );
-                return;
+                self.pictureLimit--;
+                
+                dispatch_queue_t backgroundQueue = dispatch_queue_create("imageSaveThread", 0);
+                
+                dispatch_async(backgroundQueue, ^
+                {
+                    UIImage *newImage = [UIImage imageWithCGImage:image.CGImage scale:1.0 orientation:UIImageOrientationUp];
+                    NSData  *pictureData = UIImageJPEGRepresentation( newImage, 0.8 );
+                    
+                    NSArray  *directories = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+                    NSString *documentsDirectory = [directories objectAtIndex:0];
+                   
+                    NSError  *error = nil;
+                    NSString *fileName = [NSString stringWithFormat:@"image-%@", [NSDate date]];
+                    NSString *filePathToWrite = [documentsDirectory stringByAppendingPathComponent:fileName];
+                   
+                    [pictureData writeToFile:filePathToWrite options:NSAtomicWrite error:&error];
+                   
+                    if( error )
+                    {
+                        NSLog(@"%@", error.localizedDescription );
+                        return;
+                    }
+                   
+                    [self.availablePhotos addObject:filePathToWrite];
+                    self.lastTakenDate = [NSDate date];
+                    NSLog(@"PICTURE TAKEN");
+                });
+
             }
-            
-            [self.availablePhotos addObject:filePathToWrite];
-            self.lastTakenDate = [NSDate date];
-            NSLog(@"PICTURE TAKEN");
-        });
-    }
-    else
-    {
-        self.initialDetection = NO;
-    }
+        }];
+//    }
+//    else
+//    {
+//        self.initialDetection = NO;
+//    }
+    
+//    UIImage *cameraImage = self.brightnessFilter.imageFromCurrentFramebuffer;
+//    
+//    if( cameraImage && !self.initialDetection )
+//    {
+//        self.pictureLimit--;
+//        
+//        dispatch_queue_t backgroundQueue = dispatch_queue_create("imageSaveThread", 0);
+//        
+//        dispatch_async(backgroundQueue, ^
+//        {
+//            UIImage *image = [UIImage imageWithCGImage:cameraImage.CGImage scale:1.0 orientation:UIImageOrientationUp];
+//            
+//            NSData   *pictureData = UIImageJPEGRepresentation(image, 0.8);
+//            
+//            NSArray  *directories = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//            NSString *documentsDirectory = [directories objectAtIndex:0];
+//            
+//            NSError  *error = nil;
+//            NSString *fileName = [NSString stringWithFormat:@"image-%@", [NSDate date]];
+//            NSString *filePathToWrite = [documentsDirectory stringByAppendingPathComponent:fileName];
+//            
+//            [pictureData writeToFile:filePathToWrite options:NSAtomicWrite error:&error];
+//
+//            if( error )
+//            {
+//                NSLog(@"%@", error.localizedDescription );
+//                return;
+//            }
+//            
+//            [self.availablePhotos addObject:filePathToWrite];
+//            self.lastTakenDate = [NSDate date];
+//            NSLog(@"PICTURE TAKEN");
+//        });
+//    }
+//    else
+//    {
+//        self.initialDetection = NO;
+//    }
 }
 
 - (void)sendAvailablePhotos

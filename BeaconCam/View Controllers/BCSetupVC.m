@@ -60,25 +60,24 @@
 
 - (IBAction)submitEmail
 {
-    if( self.emailField.text.length == 0 )
+    if( [self.emailField.text rangeOfString:@"@"].location == NSNotFound )
     {
         [self.emailAlert show];
+        return;
     }
     
-    if( [self.pictureIntervalField.text doubleValue] < 0.3 )
+    if( [self.pictureIntervalField.text doubleValue] < 0.5 )
     {
         [self.pictureIntervalAlert show];
+        return;
     }
+
+    [BCUserManager setUserEmail:[self.emailField.text lowercaseString]];
     
-    else
-    {
-        [BCUserManager setUserEmail:[self.emailField.text lowercaseString]];
-        
-        [[NSUserDefaults standardUserDefaults] setObject:self.pictureIntervalField.text forKey:@"pictureInterval"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
+    [[NSUserDefaults standardUserDefaults] setObject:self.pictureIntervalField.text forKey:@"pictureInterval"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField

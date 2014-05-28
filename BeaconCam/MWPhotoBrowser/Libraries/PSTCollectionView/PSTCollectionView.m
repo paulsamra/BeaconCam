@@ -1926,7 +1926,8 @@ static void PSTCollectionViewCommonSetup(PSTCollectionView *_self) {
             (long)deleteItem.indexPathBeforeUpdate.section);
 
             for (PSTCollectionViewUpdateItem *moveItem in sortedMutableMoveItems) {
-                NSAssert(![deleteItem.indexPathBeforeUpdate isEqual:moveItem.indexPathBeforeUpdate],
+                PSTCollectionViewUpdateItem *move __unused = moveItem;
+                NSAssert(![deleteItem.indexPathBeforeUpdate isEqual:move.indexPathBeforeUpdate],
                 @"attempt to delete and move the same item (%@)", deleteItem.indexPathBeforeUpdate);
             }
 

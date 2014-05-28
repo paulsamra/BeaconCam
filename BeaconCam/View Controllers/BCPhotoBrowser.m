@@ -29,6 +29,20 @@
     [self.actionSheet showInView:self.view];
 }
 
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    
+    if( ( toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft  ) ||
+        ( toInterfaceOrientation == UIInterfaceOrientationLandscapeRight ) )
+    {
+        self.alwaysShowControls = NO;
+    }
+    else
+    {
+        self.alwaysShowControls = YES;
+    }
+}
+
 - (UIActionSheet *)actionSheet
 {
     if( !_actionSheet )

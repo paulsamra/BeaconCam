@@ -42,6 +42,7 @@
 + (void)savePhotoSets:(NSArray *)photoSets
 {
     [[NSUserDefaults standardUserDefaults] setObject:photoSets forKey:kSavedPhotoSets];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 + (NSArray *)savedPhotoSets

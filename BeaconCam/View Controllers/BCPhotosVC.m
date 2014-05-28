@@ -63,10 +63,7 @@
 {
     [self.collectionView reloadData];
     
-    if( [self.refreshControl isRefreshing] )
-    {
-        [self.refreshControl endRefreshing];
-    }
+    [self.refreshControl endRefreshing];
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
